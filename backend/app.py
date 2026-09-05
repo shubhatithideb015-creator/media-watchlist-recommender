@@ -26,132 +26,150 @@ def test():
 
 @app.route('/api/media')
 def media():
-    media_list = []
-    for imdb_id in CURATED_MEDIA:
-        item = fetch_media_detail(imdb_id)
-        if item is not None:
-            media_list.append(item)
-    return media_list
+    try:
+        media_list = []
+        for imdb_id in CURATED_MEDIA:
+            item = fetch_media_detail(imdb_id)
+            if item is not None:
+                media_list.append(item)
+        return media_list
+    except Exception:
+        return {"error": "Internal server error"}, 500
 
 
 @app.route('/api/media/<id>')
 def media_detail(id):
-    item = fetch_media_detail(id)
-    if item is None:
-        return {"error": "Media not found"}, 404
-    return item
+    try:
+        if not id or not str(id).strip():
+            return {"error": "Media not found"}, 404
+
+        item = fetch_media_detail(str(id).strip())
+        if item is None:
+            return {"error": "Media not found"}, 404
+        return item
+    except Exception:
+        return {"error": "Internal server error"}, 500
 
 
 @app.route('/api/search')
 def search_movies():
-    query = request.args.get('q')
-    if not query or not query.strip():
-        return {"error": "Search query is required"}, 400
+    try:
+        query = request.args.get('q')
+        if not query or not query.strip():
+            return {"error": "Search query is required"}, 400
 
-    results = search_media(query)
-    return results
+        results = search_media(query.strip())
+        return results
+    except Exception:
+        return {"error": "Internal server error"}, 500
 
 
 # ==================================================
-# WATCHLIST ENDPOINTS (SQLite)
+# WATCHLIST ENDPOINTS (IMDb String IDs)
 # ==================================================
 
 @app.route('/api/watchlist', methods=['GET'])
 def get_watchlist():
-    connection = get_db_connection()
-    cursor = connection.cursor()
+    connection = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
 
-    cursor.execute("""
-        SELECT
-            media.id,
-            media.title,
-            media.description,
-            media.poster_url,
-            media.backdrop_url,
-            media.genre,
-            media.rating,
-            media.release_year,
-            media.media_type
-        FROM watchlist
-        JOIN media ON watchlist.media_id = media.id
-    """)
+        cursor.execute("SELECT media_id FROM watchlist")
+        rows = cursor.fetchall()
+        connection.close()
+        connection = None
 
-    rows = cursor.fetchall()
+        watchlist_items = []
+        for row in rows:
+            imdb_id = row[0]
+            item = fetch_media_detail(imdb_id)
+            if item is not None:
+                watchlist_items.append(item)
 
-    watchlist_items = []
-    for row in rows:
-        item = {
-            "id": row[0],
-            "title": row[1],
-            "description": row[2],
-            "poster_url": row[3],
-            "backdrop_url": row[4],
-            "genre": row[5],
-            "rating": row[6],
-            "release_year": row[7],
-            "media_type": row[8]
-        }
-        watchlist_items.append(item)
-
-    connection.close()
-    return watchlist_items
+        return watchlist_items
+    except Exception:
+        if connection:
+            connection.close()
+        return {"error": "Internal server error"}, 500
 
 
 @app.route('/api/watchlist', methods=['POST'])
 def add_to_watchlist():
-    data = request.get_json(silent=True)
+    connection = None
+    try:
+        data = request.get_json(silent=True)
 
-    if data is None:
-        return {"error": "Request body is required"}, 400
+        if data is None:
+            return {"error": "Request body is required"}, 400
 
-    if "media_id" not in data:
-        return {"error": "media_id is required"}, 400
+        if "media_id" not in data or not data["media_id"] or not str(data["media_id"]).strip():
+            return {"error": "media_id is required"}, 400
 
-    media_id = data["media_id"]
+        media_id = str(data["media_id"]).strip()
 
-    connection = get_db_connection()
-    cursor = connection.cursor()
+        # Verify media exists in OMDb
+        item = fetch_media_detail(media_id)
+        if item is None:
+            return {"error": "Media not found"}, 404
 
-    # Check if media exists in media table
-    cursor.execute('SELECT id FROM media WHERE id = ?', (media_id,))
-    row = cursor.fetchone()
-    if row is None:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Check if already in watchlist
+        cursor.execute('SELECT id FROM watchlist WHERE media_id = ?', (media_id,))
+        existing = cursor.fetchone()
+        if existing is not None:
+            connection.close()
+            connection = None
+            return {"error": "Media already in watchlist"}, 409
+
+        # Insert IMDb ID into watchlist
+        cursor.execute('INSERT INTO watchlist (media_id) VALUES (?)', (media_id,))
+        connection.commit()
         connection.close()
-        return {"error": "Media not found"}, 404
+        connection = None
 
-    # Check if media_id already exists in watchlist
-    cursor.execute('SELECT id FROM watchlist WHERE media_id = ?', (media_id,))
-    existing = cursor.fetchone()
-    if existing is not None:
-        connection.close()
-        return {"error": "Media already in watchlist"}, 409
+        return {"message": "Media added to watchlist"}, 201
 
-    # Insert into watchlist
-    cursor.execute('INSERT INTO watchlist (media_id) VALUES (?)', (media_id,))
-    connection.commit()
-    connection.close()
-
-    return {"message": "Media added to watchlist"}, 201
+    except Exception:
+        if connection:
+            connection.close()
+        return {"error": "Internal server error"}, 500
 
 
-@app.route('/api/watchlist/<int:media_id>', methods=['DELETE'])
+@app.route('/api/watchlist/<media_id>', methods=['DELETE'])
 def remove_from_watchlist(media_id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
+    connection = None
+    try:
+        if not media_id or not str(media_id).strip():
+            return {"error": "Media not in watchlist"}, 404
 
-    # Check if media_id exists in watchlist
-    cursor.execute('SELECT id FROM watchlist WHERE media_id = ?', (media_id,))
-    existing = cursor.fetchone()
-    if existing is None:
+        target_id = str(media_id).strip()
+
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Check if media_id exists in watchlist
+        cursor.execute('SELECT id FROM watchlist WHERE media_id = ?', (target_id,))
+        existing = cursor.fetchone()
+        if existing is None:
+            connection.close()
+            connection = None
+            return {"error": "Media not in watchlist"}, 404
+
+        # Delete from watchlist
+        cursor.execute('DELETE FROM watchlist WHERE media_id = ?', (target_id,))
+        connection.commit()
         connection.close()
-        return {"error": "Media not in watchlist"}, 404
+        connection = None
 
-    # Delete from watchlist
-    cursor.execute('DELETE FROM watchlist WHERE media_id = ?', (media_id,))
-    connection.commit()
-    connection.close()
+        return {"message": "Media removed from watchlist"}, 200
 
-    return {"message": "Media removed from watchlist"}, 200
+    except Exception:
+        if connection:
+            connection.close()
+        return {"error": "Internal server error"}, 500
 
 
 if __name__ == '__main__':
