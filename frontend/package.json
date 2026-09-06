@@ -1,0 +1,26 @@
+{
+  "name": "cinemamatch",
+  "version": "1.0.0",
+  "description": "A dark-themed cinematic movie and TV show discovery web application with watchlist management and live metadata search.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manaskumarsinghds28-art/CinemaMatch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/manaskumarsinghds28-art/CinemaMatch/issues"
+  },
+  "homepage": "https://github.com/manaskumarsinghds28-art/CinemaMatch#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
