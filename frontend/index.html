@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CinemaMatch — Media Watchlist (Iteration 1)</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              red: '#E50914',
+              'red-dark': '#B80710',
+              'red-glow': 'rgba(229, 9, 20, 0.4)',
+            },
+            cinematic: {
+              bg: '#0B0B0E',
+              surface: '#121319',
+              card: '#16171E',
+              border: '#232530',
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            cinematic: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body class="bg-[#0B0B0E] text-white min-h-screen antialiased flex flex-col selection:bg-[#E50914] selection:text-white">
+
+  <!-- Main Shell Layout -->
+  <div class="flex min-h-screen w-full">
+    
+    <!-- Desktop Sidebar (Hidden on Mobile) -->
+    <div id="sidebar-container" class="hidden lg:block flex-shrink-0"></div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 bg-[#0B0B0E]">
+      
+      <!-- Mobile Top Header (Hidden on Desktop) -->
+      <div id="mobile-header-container" class="lg:hidden sticky top-0 z-30"></div>
+
+      <!-- Desktop Top Header Search (Hidden on Mobile) -->
+      <div id="topbar-container" class="hidden lg:block sticky top-0 z-20"></div>
+
+      <!-- Main Active View -->
+      <main id="main-view-container" class="flex-1 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl w-full mx-auto"></main>
+
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation (Hidden on Desktop) -->
+  <div id="bottom-nav-container" class="lg:hidden"></div>
+
+  <!-- Modal & Toast Portals -->
+  <div id="modal-container"></div>
+  <div id="toast-container"></div>
+
+  <!-- Main Application Script -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
