@@ -1,0 +1,12 @@
+# Python / Backend
+backend/.env
+backend/cinematch.db
+backend/__pycache__/
+backend/venv/
+*.pyc
+*.db
+
+# Frontend / Node
+frontend/node_modules/
+node_modules/
+.DS_Store
