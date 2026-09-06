@@ -1,9 +1,9 @@
 from flask import Flask, request
-from database import get_db_connection
+from database import get_db_connection, init_db
 from omdb import search_media, fetch_media_detail
 
 app = Flask(__name__)
-
+init_db()
 # Curated catalog of IMDb IDs for /api/media endpoint
 CURATED_MEDIA = [
     "tt0816692",
@@ -58,80 +58,81 @@ def search_movies():
 
 @app.route('/api/watchlist', methods=['GET'])
 def get_watchlist():
-    connection = get_db_connection()
-    cursor = connection.cursor()
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
 
-    cursor.execute("""
-        SELECT
-            media.id,
-            media.title,
-            media.description,
-            media.poster_url,
-            media.backdrop_url,
-            media.genre,
-            media.rating,
-            media.release_year,
-            media.media_type
-        FROM watchlist
-        JOIN media ON watchlist.media_id = media.id
-    """)
+        cursor.execute('SELECT media_id FROM watchlist')
+        rows = cursor.fetchall()
 
-    rows = cursor.fetchall()
+        connection.close()
 
-    watchlist_items = []
-    for row in rows:
-        item = {
-            "id": row[0],
-            "title": row[1],
-            "description": row[2],
-            "poster_url": row[3],
-            "backdrop_url": row[4],
-            "genre": row[5],
-            "rating": row[6],
-            "release_year": row[7],
-            "media_type": row[8]
-        }
-        watchlist_items.append(item)
+        watchlist_items = []
 
-    connection.close()
-    return watchlist_items
+        for row in rows:
+            media_id = row[0]
 
+            # Get complete movie details from OMDb
+            item = fetch_media_detail(media_id)
+
+            if item is not None:
+                watchlist_items.append(item)
+
+        return watchlist_items
+
+    except Exception:
+        return {"error": "Internal server error"}, 500
 
 @app.route('/api/watchlist', methods=['POST'])
 def add_to_watchlist():
-    data = request.get_json(silent=True)
+    try:
+        data = request.get_json(silent=True)
 
-    if data is None:
-        return {"error": "Request body is required"}, 400
+        if data is None:
+            return {"error": "Request body is required"}, 400
 
-    if "media_id" not in data:
-        return {"error": "media_id is required"}, 400
+        if "media_id" not in data:
+            return {"error": "media_id is required"}, 400
 
-    media_id = data["media_id"]
+        media_id = str(data["media_id"]).strip()
 
-    connection = get_db_connection()
-    cursor = connection.cursor()
+        if not media_id:
+            return {"error": "media_id is required"}, 400
 
-    # Check if media exists in media table
-    cursor.execute('SELECT id FROM media WHERE id = ?', (media_id,))
-    row = cursor.fetchone()
-    if row is None:
+        # Check if media exists in OMDb
+        item = fetch_media_detail(media_id)
+
+        if item is None:
+            return {"error": "Media not found"}, 404
+
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Check if already in watchlist
+        cursor.execute(
+            'SELECT id FROM watchlist WHERE media_id = ?',
+            (media_id,)
+        )
+
+        existing = cursor.fetchone()
+
+        if existing is not None:
+            connection.close()
+            return {"error": "Media already in watchlist"}, 409
+
+        # Add IMDb ID to watchlist
+        cursor.execute(
+            'INSERT INTO watchlist (media_id) VALUES (?)',
+            (media_id,)
+        )
+
+        connection.commit()
         connection.close()
-        return {"error": "Media not found"}, 404
 
-    # Check if media_id already exists in watchlist
-    cursor.execute('SELECT id FROM watchlist WHERE media_id = ?', (media_id,))
-    existing = cursor.fetchone()
-    if existing is not None:
-        connection.close()
-        return {"error": "Media already in watchlist"}, 409
+        return {"message": "Media added to watchlist"}, 201
 
-    # Insert into watchlist
-    cursor.execute('INSERT INTO watchlist (media_id) VALUES (?)', (media_id,))
-    connection.commit()
-    connection.close()
-
-    return {"message": "Media added to watchlist"}, 201
+    except Exception:
+        return {"error": "Internal server error"}, 500
 
 
 @app.route('/api/watchlist/<int:media_id>', methods=['DELETE'])
