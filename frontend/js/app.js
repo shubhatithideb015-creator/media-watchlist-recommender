@@ -59,9 +59,7 @@ class CinemaMatchApp {
         document.activeElement.tagName !== 'TEXTAREA'
       ) {
         e.preventDefault();
-        const searchInput =
-          document.querySelector('#discover-search-input') ||
-          document.querySelector('#topbar-search-input');
+        const searchInput = document.querySelector('#discover-search-input');
         if (searchInput) {
           searchInput.focus();
         } else {

@@ -1,5 +1,5 @@
 // js/components/MobileHeader.js
-// Mobile Top Header (Iteration 1)
+// Mobile Top Header (Search removed from header)
 
 import { store } from '../state/store.js';
 
@@ -9,6 +9,9 @@ export class MobileHeader {
   }
 
   render() {
+    const state = store.getState();
+    const watchlistCount = state.watchlist ? state.watchlist.length : 0;
+
     this.container.innerHTML = `
       <header class="lg:hidden h-14 px-4 flex items-center justify-between border-b border-[#1A1C24] bg-[#0B0B0E]/95 backdrop-blur-lg sticky top-0 z-30">
         
@@ -24,17 +27,17 @@ export class MobileHeader {
           </span>
         </div>
 
-        <!-- Action Icons -->
+        <!-- Right Quick Actions -->
         <div class="flex items-center gap-2">
           <button 
-            id="mobile-search-toggle"
-            class="p-2 text-[#9CA3AF] hover:text-white transition-colors"
-            title="Search"
+            id="mobile-watchlist-btn"
+            class="px-2.5 py-1 rounded-lg bg-[#16171E] border border-[#232530] text-xs font-semibold text-white flex items-center gap-1.5"
+            title="Watchlist"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <svg class="w-3.5 h-3.5 text-[#E50914]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
             </svg>
+            <span>${watchlistCount}</span>
           </button>
         </div>
       </header>
@@ -49,15 +52,10 @@ export class MobileHeader {
       logo.addEventListener('click', () => store.setView('home'));
     }
 
-    const searchToggle = this.container.querySelector('#mobile-search-toggle');
-    if (searchToggle) {
-      searchToggle.addEventListener('click', () => {
-        store.setView('discover');
-        setTimeout(() => {
-          const input = document.querySelector('#discover-search-input');
-          if (input) input.focus();
-        }, 100);
-      });
+    const watchlistBtn = this.container.querySelector('#mobile-watchlist-btn');
+    if (watchlistBtn) {
+      watchlistBtn.addEventListener('click', () => store.setView('watchlist'));
     }
   }
 }
+
