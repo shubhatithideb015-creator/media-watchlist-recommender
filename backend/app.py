@@ -38,7 +38,7 @@ def test():
 
 @app.route('/api/version')
 def version():
-    return {"version": "v2_db_fix"}
+    return {"version": "v3_watchlist_fix"}
 
 
 @app.route('/api/media')
