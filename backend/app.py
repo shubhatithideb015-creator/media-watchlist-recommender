@@ -1,7 +1,7 @@
 import os
 from flask_cors import CORS
 from flask import Flask, request
-from database import get_db_connection
+from database import get_db_connection, init_db
 from omdb import search_media, fetch_media_detail
 
 app = Flask(__name__)
