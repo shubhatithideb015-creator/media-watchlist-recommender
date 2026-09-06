@@ -5,6 +5,11 @@ from omdb import search_media, fetch_media_detail
 
 app = Flask(__name__)
 CORS(app)
+@app.route("/")
+def home():
+    return {
+        "message": "CineMatch Backend API is running successfully"
+    }
 
 # Curated catalog of IMDb IDs for /api/media endpoint
 CURATED_MEDIA = [
