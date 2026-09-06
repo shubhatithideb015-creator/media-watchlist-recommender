@@ -108,7 +108,7 @@ def get_watchlist():
         if connection:
             connection.close()
         app.logger.error(f"Error in get_watchlist: {e}", exc_info=True)
-        return {"error": "Internal server error"}, 500
+        return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
 
 
 @app.route('/api/watchlist', methods=['POST'])
@@ -153,7 +153,7 @@ def add_to_watchlist():
         if connection:
             connection.close()
         app.logger.error(f"Error in add_to_watchlist: {e}", exc_info=True)
-        return {"error": "Internal server error"}, 500
+        return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
 
 
 @app.route('/api/watchlist/<media_id>', methods=['DELETE'])
@@ -188,7 +188,7 @@ def remove_from_watchlist(media_id):
         if connection:
             connection.close()
         app.logger.error(f"Error in remove_from_watchlist: {e}", exc_info=True)
-        return {"error": "Internal server error"}, 500
+        return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
 
 
 if __name__ == '__main__':
