@@ -36,6 +36,11 @@ def test():
     return {"message": "CineMatch Backend"}
 
 
+@app.route('/api/version')
+def version():
+    return {"version": "v2_db_fix"}
+
+
 @app.route('/api/media')
 def media():
     try:
