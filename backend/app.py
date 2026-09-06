@@ -6,6 +6,8 @@ from omdb import search_media, fetch_media_detail
 
 app = Flask(__name__)
 CORS(app)
+init_db()
+
 @app.route("/")
 def home():
     return {
