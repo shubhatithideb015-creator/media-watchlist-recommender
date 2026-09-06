@@ -1,8 +1,10 @@
+from flask_cors import CORS
 from flask import Flask, request
 from database import get_db_connection
 from omdb import search_media, fetch_media_detail
 
 app = Flask(__name__)
+CORS(app)
 
 # Curated catalog of IMDb IDs for /api/media endpoint
 CURATED_MEDIA = [
