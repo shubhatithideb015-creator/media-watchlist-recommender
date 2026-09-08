@@ -3,6 +3,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from database import get_db_connection, init_db
 from omdb import search_media, fetch_media_detail
+from werkzeug.security import generate_password_hash,check_password_hash
 
 app = Flask(__name__)
 CORS(app)
@@ -40,7 +41,74 @@ def test():
 def version():
     return {"version": "v3_watchlist_fix"}
 
+@app.route('/api/auth/signup', methods=['POST'])
+def signup():
+    data = request.get_json(silent=True)
 
+    if data is None:
+        return {"error": "Request body is required"}, 400
+
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return {"error": "Username and password are required"}, 400
+
+    password_hash = generate_password_hash(password)
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            "INSERT INTO users (username, password_hash) VALUES (?, ?)",
+            (username.strip(), password_hash)
+        )
+
+        connection.commit()
+
+        return {"message": "User created successfully"}, 201
+
+    except Exception:
+        return {"error": "Username already exists"}, 409
+
+    finally:
+        connection.close()
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    data = request.get_json(silent=True)
+
+    if data is None:
+        return {"error": "Request body is required"}, 400
+
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return {"error": "Username and password are required"}, 400
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        "SELECT id, username, password_hash FROM users WHERE username = ?",
+        (username.strip(),)
+    )
+
+    user = cursor.fetchone()
+    connection.close()
+
+    if user is None:
+        return {"error": "User not found. Please register first"}, 404
+
+    if not check_password_hash(user[2], password):
+        return {"error": "Invalid password"}, 401
+
+    return {
+        "message": "Login successful",
+        "user_id": user[0],
+        "username": user[1]
+    }, 200
 @app.route('/api/media')
 def media():
     try:
