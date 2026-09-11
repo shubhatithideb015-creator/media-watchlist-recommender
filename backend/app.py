@@ -160,10 +160,19 @@ def search_movies():
 def get_watchlist():
     connection = None
     try:
+        user_id = request.args.get('user_id')
+        if not user_id:
+            return {"error": "user_id is required"}, 400
+
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            return {"error": "user_id must be an integer"}, 400
+
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        cursor.execute('SELECT media_id FROM watchlist')
+        cursor.execute('SELECT media_id FROM watchlist WHERE user_id = ?', (user_id,))
         rows = cursor.fetchall()
         connection.close()
         connection = None
@@ -196,6 +205,14 @@ def add_to_watchlist():
         if "media_id" not in data or not data["media_id"] or not str(data["media_id"]).strip():
             return {"error": "media_id is required"}, 400
 
+        if "user_id" not in data or data["user_id"] is None:
+            return {"error": "user_id is required"}, 400
+
+        try:
+            user_id = int(data["user_id"])
+        except (ValueError, TypeError):
+            return {"error": "user_id must be an integer"}, 400
+
         media_id = str(data["media_id"]).strip()
 
         # Check if media exists in OMDb
@@ -206,16 +223,16 @@ def add_to_watchlist():
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        # Check if already in watchlist
-        cursor.execute('SELECT id FROM watchlist WHERE media_id = ?', (media_id,))
+        # Check if already in watchlist for this user
+        cursor.execute('SELECT id FROM watchlist WHERE user_id = ? AND media_id = ?', (user_id, media_id))
         existing = cursor.fetchone()
         if existing is not None:
             connection.close()
             connection = None
             return {"error": "Media already in watchlist"}, 409
 
-        # Add IMDb ID to watchlist
-        cursor.execute('INSERT INTO watchlist (media_id) VALUES (?)', (media_id,))
+        # Add IMDb ID to watchlist with user_id
+        cursor.execute('INSERT INTO watchlist (user_id, media_id) VALUES (?, ?)', (user_id, media_id))
         connection.commit()
         connection.close()
         connection = None
@@ -233,6 +250,15 @@ def add_to_watchlist():
 def remove_from_watchlist(media_id):
     connection = None
     try:
+        user_id = request.args.get('user_id')
+        if not user_id:
+            return {"error": "user_id is required"}, 400
+
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            return {"error": "user_id must be an integer"}, 400
+
         if not media_id or not str(media_id).strip():
             return {"error": "Media not in watchlist"}, 404
 
@@ -241,16 +267,16 @@ def remove_from_watchlist(media_id):
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        # Check if media_id exists in watchlist
-        cursor.execute('SELECT id FROM watchlist WHERE media_id = ?', (target_id,))
+        # Check if media_id exists in watchlist for this user
+        cursor.execute('SELECT id FROM watchlist WHERE user_id = ? AND media_id = ?', (user_id, target_id))
         existing = cursor.fetchone()
         if existing is None:
             connection.close()
             connection = None
             return {"error": "Media not in watchlist"}, 404
 
-        # Delete from watchlist
-        cursor.execute('DELETE FROM watchlist WHERE media_id = ?', (target_id,))
+        # Delete from watchlist for this user only
+        cursor.execute('DELETE FROM watchlist WHERE user_id = ? AND media_id = ?', (user_id, target_id))
         connection.commit()
         connection.close()
         connection = None

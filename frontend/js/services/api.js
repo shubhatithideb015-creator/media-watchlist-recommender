@@ -178,26 +178,36 @@ class MediaApiService {
   /**
    * Get all watchlist items from backend GET /api/watchlist
    */
-  async getWatchlist() {
-    const baseUrl = getApiBaseUrl();
-    const response = await fetch(`${baseUrl}/api/watchlist`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch watchlist (Status: ${response.status})`);
-    }
-    const data = await response.json();
-    if (!Array.isArray(data)) return [];
-    return data.map(normalizeMedia);
+  async getWatchlist(userId) {
+  if (!userId) {
+    throw new Error('user_id is required');
   }
 
+  const baseUrl = getApiBaseUrl();
+  const response = await fetch(
+    `${baseUrl}/api/watchlist?user_id=${encodeURIComponent(userId)}`
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch watchlist (Status: ${response.status})`);
+  }
+
+  const data = await response.json();
+  if (!Array.isArray(data)) return [];
+  return data.map(normalizeMedia);
+}
   /**
    * Add movie to watchlist via backend POST /api/watchlist
-   * Request body: { "media_id": "<imdb_id>" }
+   *  * Request body: { "media_id": "<imdb_id>", "user_id": <user_id> }
    */
-  async addToWatchlist(mediaId) {
+  async addToWatchlist(mediaId, userId) {
     if (!mediaId || !String(mediaId).trim()) {
       throw new Error('media_id is required');
     }
     const cleanId = String(mediaId).trim();
+    if (!userId) {
+  throw new Error('user_id is required');
+}
     const baseUrl = getApiBaseUrl();
 
     const response = await fetch(`${baseUrl}/api/watchlist`, {
@@ -205,7 +215,10 @@ class MediaApiService {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ media_id: cleanId }),
+     body: JSON.stringify({
+  media_id: cleanId,
+  user_id: userId,
+}),
     });
 
     const data = await response.json().catch(() => ({}));
@@ -236,16 +249,21 @@ class MediaApiService {
   /**
    * Remove movie from watchlist via backend DELETE /api/watchlist/<media_id>
    */
-  async removeFromWatchlist(mediaId) {
+  async removeFromWatchlist(mediaId, userId) {
     if (!mediaId || !String(mediaId).trim()) {
       throw new Error('media_id is required');
     }
     const cleanId = String(mediaId).trim();
+    if (!userId) {
+  throw new Error('user_id is required');
+}
     const baseUrl = getApiBaseUrl();
-
-    const response = await fetch(`${baseUrl}/api/watchlist/${encodeURIComponent(cleanId)}`, {
-      method: 'DELETE',
-    });
+const response = await fetch(
+  `${baseUrl}/api/watchlist/${encodeURIComponent(cleanId)}?user_id=${encodeURIComponent(userId)}`,
+  {
+    method: 'DELETE',
+  }
+);
 
     const data = await response.json().catch(() => ({}));
 

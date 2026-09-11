@@ -9,7 +9,9 @@ class Store {
     this.listeners = [];
 
     this.state = {
-      currentView: 'home', // 'home' | 'discover' | 'watchlist'
+      currentView: 'login',
+      isLoggedIn: false,
+      currentUser: null,// 'home' | 'discover' | 'watchlist'
       
       // Curated Media from GET /api/media
       curatedMedia: [],
@@ -84,6 +86,28 @@ class Store {
   }
 
   /**
+   * Login user and set authentication state
+   */
+  login(userId, username) {
+    this.state.isLoggedIn = true;
+    this.state.currentUser = { id: userId, username };
+    this.state.currentView = 'home';
+    this.notify();
+  }
+
+  /**
+   * Logout user and clear authentication state
+   */
+  logout() {
+  this.state.isLoggedIn = false;
+  this.state.currentUser = null;
+  this.state.watchlist = [];
+  this.state.watchlistError = null;
+  this.state.currentView = 'login';
+  this.notify();
+}
+
+  /**
    * Fetch initial curated media from backend GET /api/media
    */
   async loadCuratedMedia() {
@@ -121,7 +145,16 @@ class Store {
     this.notify();
 
     try {
-      const items = await apiService.getWatchlist();
+      const userId = this.state.currentUser?.id;
+
+if (!userId) {
+  this.state.isLoadingWatchlist = false;
+  this.state.watchlist = [];
+  this.notify();
+  return [];
+}
+
+const items = await apiService.getWatchlist(userId);
       this.state.watchlist = items;
       this.state.isLoadingWatchlist = false;
       this.state.watchlistError = null;
@@ -156,7 +189,14 @@ class Store {
     }
 
     try {
-      const res = await apiService.addToWatchlist(mediaId);
+      const userId = this.state.currentUser?.id;
+
+if (!userId) {
+  this.showToast('Please log in first', 'error');
+  return;
+}
+
+const res = await apiService.addToWatchlist(mediaId, userId);
 
       if (res.status === 201 || res.success) {
         if (!this.isInWatchlist(mediaId)) {
@@ -192,7 +232,13 @@ class Store {
     this.notify();
 
     try {
-      await apiService.removeFromWatchlist(mediaId);
+     const userId = this.state.currentUser?.id;
+
+if (!userId) {
+  throw new Error('Please log in first');
+}
+
+await apiService.removeFromWatchlist(mediaId, userId);
       this.showToast(`Removed "${title}" from Watchlist`, 'info');
     } catch (err) {
       console.error('Remove from watchlist error:', err);

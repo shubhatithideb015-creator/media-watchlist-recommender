@@ -3,6 +3,7 @@
 // Connected to Flask Backend (Media Catalog, Search, Watchlist)
 
 import { store } from './state/store.js';
+
 import { Sidebar } from './components/Sidebar.js';
 import { TopBar } from './components/TopBar.js';
 import { MobileHeader } from './components/MobileHeader.js';
@@ -13,7 +14,7 @@ import { Toast } from './components/Toast.js';
 import { HomeView } from './components/views/HomeView.js';
 import { DiscoverView } from './components/views/DiscoverView.js';
 import { WatchlistView } from './components/views/WatchlistView.js';
-
+import { LoginView } from './components/views/LoginView.js';
 class CinemaMatchApp {
   constructor() {
     this.sidebarContainer = document.getElementById('sidebar-container');
@@ -34,11 +35,11 @@ class CinemaMatchApp {
 
     // Views
     this.views = {
-      home: new HomeView(this.mainViewContainer),
-      discover: new DiscoverView(this.mainViewContainer),
-      watchlist: new WatchlistView(this.mainViewContainer),
-    };
-
+    login: new LoginView(this.mainViewContainer),
+    home: new HomeView(this.mainViewContainer),
+    discover: new DiscoverView(this.mainViewContainer),
+    watchlist: new WatchlistView(this.mainViewContainer)
+};
     this.activeViewName = null;
   }
 
@@ -87,7 +88,11 @@ class CinemaMatchApp {
 
   render(isInitial = false) {
     const state = store.getState();
-
+     if (state.currentView === 'login') {
+        this.mainViewContainer.innerHTML = '';
+        this.views.login.render();
+        return;
+    }
     // Render persistent headers & navigation
     this.sidebar.render();
     this.topbar.render();

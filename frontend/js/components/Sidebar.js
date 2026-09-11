@@ -70,6 +70,17 @@ export class Sidebar {
               <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-[#E50914] text-white">${watchlistCount}</span>
             ` : ''}
           </button>
+
+          <!-- Logout -->
+          <button>
+            id="sidebar-logout-btn"
+            class="w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-medium transition-all text-[#8E92A0] hover:text-white hover:bg-white/5"
+          >
+            <svg class="w-5 h-5 text-current" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+            <span>Logout</span>
+          </button>
         </nav>
 
         <!-- Footer Tag -->
@@ -93,6 +104,13 @@ export class Sidebar {
     const logo = this.container.querySelector('#sidebar-logo');
     if (logo) {
       logo.addEventListener('click', () => store.setView('home'));
+    }
+
+    const logoutBtn = this.container.querySelector('#sidebar-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        store.logout();
+      });
     }
   }
 }
