@@ -4,6 +4,7 @@ from flask_cors import CORS
 from database import get_db_connection, init_db
 from omdb import search_media, fetch_media_detail
 from werkzeug.security import generate_password_hash,check_password_hash
+from taste_dna import calculate_genre_dna
 
 app = Flask(__name__)
 CORS(app)
@@ -156,7 +157,62 @@ def search_movies():
 # WATCHLIST ENDPOINTS (IMDb String IDs)
 # ==================================================
 
-@app.route('/api/watchlist', methods=['GET'])
+
+@app.route('/api/taste-dna', methods=['GET'])
+def get_taste_dna():
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return {"error": "user_id is required"}, 400
+
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        return {"error": "user_id must be an integer"}, 400
+
+    connection = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(
+            'SELECT media_id FROM watchlist WHERE user_id = ?',
+            (user_id,)
+        )
+
+        rows = cursor.fetchall()
+        connection.close()
+        connection = None
+
+        watchlist_items = []
+
+        for row in rows:
+            media_id = row[0]
+            item = fetch_media_detail(media_id)
+
+            if item is not None:
+                watchlist_items.append(item)
+
+        genre_dna = calculate_genre_dna(watchlist_items)
+
+        return {
+            "user_id": user_id,
+            "genre_dna": genre_dna
+        }
+
+    except Exception as e:
+        if connection:
+            connection.close()
+
+        app.logger.error(
+            f"Error in get_taste_dna: {e}",
+            exc_info=True
+        )
+
+        return {
+            "error": "Internal server error"
+        }, 500
 def get_watchlist():
     connection = None
     try:
