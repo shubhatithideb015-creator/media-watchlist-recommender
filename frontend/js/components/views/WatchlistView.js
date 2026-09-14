@@ -68,6 +68,8 @@ export class WatchlistView {
     }
 
     // 3. Normal State
+    const tasteDna = state.tasteDna || [];
+
     this.container.innerHTML = `
       <div class="space-y-6 pb-20">
         
@@ -98,6 +100,36 @@ export class WatchlistView {
           `
               : ''
           }
+        </div>
+
+        <!-- Taste DNA Section -->
+        <div class="bg-[#14151C] border border-[#21232E] rounded-3xl p-6 space-y-5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-cinematic text-lg font-bold text-white tracking-tight">
+              Cinematic Taste DNA
+            </h3>
+            ${tasteDna.length > 0 ? `<span class="text-xs font-semibold text-[#8E92A0]">Top: ${tasteDna[0].genre}</span>` : ''}
+          </div>
+
+          ${tasteDna.length > 0 ? `
+            <div class="space-y-4">
+              ${tasteDna.map(item => `
+                <div>
+                  <div class="flex justify-between text-xs font-semibold mb-1">
+                    <span class="text-white">${item.genre}</span>
+                    <span class="text-[#8E92A0]">${item.percentage}%</span>
+                  </div>
+                  <div class="w-full bg-[#1F212C] h-2 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full bg-[#E50914]" style="width: ${item.percentage}%;"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="text-center py-6 text-sm text-[#8E92A0]">
+              Add movies to your watchlist to generate your Taste DNA.
+            </div>
+          `}
         </div>
 
         <!-- Watchlist Content (Movies Grid OR Empty State) -->

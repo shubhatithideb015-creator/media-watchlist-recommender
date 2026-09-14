@@ -34,8 +34,8 @@ export function normalizeMedia(item) {
     item.poster_url && item.poster_url !== 'N/A' && item.poster_url.startsWith('http')
       ? item.poster_url
       : item.poster && item.poster !== 'N/A' && item.poster.startsWith('http')
-      ? item.poster
-      : FALLBACK_POSTER;
+        ? item.poster
+        : FALLBACK_POSTER;
 
   const backdrop =
     item.backdrop_url && item.backdrop_url !== 'N/A' && item.backdrop_url.startsWith('http')
@@ -179,23 +179,40 @@ class MediaApiService {
    * Get all watchlist items from backend GET /api/watchlist
    */
   async getWatchlist(userId) {
-  if (!userId) {
-    throw new Error('user_id is required');
+    if (!userId) {
+      throw new Error('user_id is required');
+    }
+
+    const baseUrl = getApiBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/api/watchlist?user_id=${encodeURIComponent(userId)}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch watchlist (Status: ${response.status})`);
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data)) return [];
+    return data.map(normalizeMedia);
   }
+  async getTasteDna(userId) {
+    if (!userId) {
+      throw new Error('userId is required');
+    }
 
-  const baseUrl = getApiBaseUrl();
-  const response = await fetch(
-    `${baseUrl}/api/watchlist?user_id=${encodeURIComponent(userId)}`
-  );
+    const response = await fetch(
+      `${window.__API_BASE_URL__}/api/taste-dna?user_id=${userId}`
+    );
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch watchlist (Status: ${response.status})`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to load Taste DNA');
+    }
+
+    return data;
   }
-
-  const data = await response.json();
-  if (!Array.isArray(data)) return [];
-  return data.map(normalizeMedia);
-}
   /**
    * Add movie to watchlist via backend POST /api/watchlist
    *  * Request body: { "media_id": "<imdb_id>", "user_id": <user_id> }
@@ -206,8 +223,8 @@ class MediaApiService {
     }
     const cleanId = String(mediaId).trim();
     if (!userId) {
-  throw new Error('user_id is required');
-}
+      throw new Error('user_id is required');
+    }
     const baseUrl = getApiBaseUrl();
 
     const response = await fetch(`${baseUrl}/api/watchlist`, {
@@ -215,10 +232,10 @@ class MediaApiService {
       headers: {
         'Content-Type': 'application/json',
       },
-     body: JSON.stringify({
-  media_id: cleanId,
-  user_id: userId,
-}),
+      body: JSON.stringify({
+        media_id: cleanId,
+        user_id: userId,
+      }),
     });
 
     const data = await response.json().catch(() => ({}));
@@ -255,15 +272,15 @@ class MediaApiService {
     }
     const cleanId = String(mediaId).trim();
     if (!userId) {
-  throw new Error('user_id is required');
-}
+      throw new Error('user_id is required');
+    }
     const baseUrl = getApiBaseUrl();
-const response = await fetch(
-  `${baseUrl}/api/watchlist/${encodeURIComponent(cleanId)}?user_id=${encodeURIComponent(userId)}`,
-  {
-    method: 'DELETE',
-  }
-);
+    const response = await fetch(
+      `${baseUrl}/api/watchlist/${encodeURIComponent(cleanId)}?user_id=${encodeURIComponent(userId)}`,
+      {
+        method: 'DELETE',
+      }
+    );
 
     const data = await response.json().catch(() => ({}));
 

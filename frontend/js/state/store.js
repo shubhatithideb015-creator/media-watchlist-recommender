@@ -9,10 +9,13 @@ class Store {
     this.listeners = [];
 
     this.state = {
+      tasteDna: [],
+      isLoadingTasteDna: false,
+      tasteDnaError: null,
       currentView: 'login',
       isLoggedIn: false,
       currentUser: null,// 'home' | 'discover' | 'watchlist'
-      
+
       // Curated Media from GET /api/media
       curatedMedia: [],
       isLoadingCurated: false,
@@ -90,22 +93,26 @@ class Store {
    */
   login(userId, username) {
     this.state.isLoggedIn = true;
-    this.state.currentUser = { id: userId, username };
-    this.state.currentView = 'home';
-    this.notify();
-  }
 
+    this.state.currentUser = { id: userId, username };
+
+    this.state.currentView = 'home';
+
+    this.notify();
+
+    this.loadTasteDna();
+  }
   /**
    * Logout user and clear authentication state
    */
   logout() {
-  this.state.isLoggedIn = false;
-  this.state.currentUser = null;
-  this.state.watchlist = [];
-  this.state.watchlistError = null;
-  this.state.currentView = 'login';
-  this.notify();
-}
+    this.state.isLoggedIn = false;
+    this.state.currentUser = null;
+    this.state.watchlist = [];
+    this.state.watchlistError = null;
+    this.state.currentView = 'login';
+    this.notify();
+  }
 
   /**
    * Fetch initial curated media from backend GET /api/media
@@ -147,14 +154,14 @@ class Store {
     try {
       const userId = this.state.currentUser?.id;
 
-if (!userId) {
-  this.state.isLoadingWatchlist = false;
-  this.state.watchlist = [];
-  this.notify();
-  return [];
-}
+      if (!userId) {
+        this.state.isLoadingWatchlist = false;
+        this.state.watchlist = [];
+        this.notify();
+        return [];
+      }
 
-const items = await apiService.getWatchlist(userId);
+      const items = await apiService.getWatchlist(userId);
       this.state.watchlist = items;
       this.state.isLoadingWatchlist = false;
       this.state.watchlistError = null;
@@ -173,7 +180,40 @@ const items = await apiService.getWatchlist(userId);
       return [];
     }
   }
+  async loadTasteDna() {
+    this.state.isLoadingTasteDna = true;
+    this.state.tasteDnaError = null;
+    this.notify();
 
+    try {
+      const userId = this.state.currentUser?.id;
+
+      if (!userId) {
+        this.state.isLoadingTasteDna = false;
+        this.state.tasteDna = [];
+        this.notify();
+        return [];
+      }
+
+      const data = await apiService.getTasteDna(userId);
+
+      this.state.tasteDna = data.genre_dna || [];
+      this.state.isLoadingTasteDna = false;
+      this.state.tasteDnaError = null;
+
+      this.notify();
+      return this.state.tasteDna;
+    } catch (err) {
+      console.error('Failed to load Taste DNA:', err);
+
+      this.state.isLoadingTasteDna = false;
+      this.state.tasteDnaError =
+        err.message || 'Unable to load Taste DNA.';
+
+      this.notify();
+      return [];
+    }
+  }
   /**
    * Add movie to watchlist via backend POST /api/watchlist
    */
@@ -191,12 +231,12 @@ const items = await apiService.getWatchlist(userId);
     try {
       const userId = this.state.currentUser?.id;
 
-if (!userId) {
-  this.showToast('Please log in first', 'error');
-  return;
-}
+      if (!userId) {
+        this.showToast('Please log in first', 'error');
+        return;
+      }
 
-const res = await apiService.addToWatchlist(mediaId, userId);
+      const res = await apiService.addToWatchlist(mediaId, userId);
 
       if (res.status === 201 || res.success) {
         if (!this.isInWatchlist(mediaId)) {
@@ -232,13 +272,13 @@ const res = await apiService.addToWatchlist(mediaId, userId);
     this.notify();
 
     try {
-     const userId = this.state.currentUser?.id;
+      const userId = this.state.currentUser?.id;
 
-if (!userId) {
-  throw new Error('Please log in first');
-}
+      if (!userId) {
+        throw new Error('Please log in first');
+      }
 
-await apiService.removeFromWatchlist(mediaId, userId);
+      await apiService.removeFromWatchlist(mediaId, userId);
       this.showToast(`Removed "${title}" from Watchlist`, 'info');
     } catch (err) {
       console.error('Remove from watchlist error:', err);
