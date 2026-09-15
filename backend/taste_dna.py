@@ -36,3 +36,43 @@ if __name__ == "__main__":
     ]
 
     print(calculate_genre_dna(test_movies))
+
+def calculate_rating_dna(watchlist_items):
+    ratings = []
+
+    for item in watchlist_items:
+        rating = item.get("rating")
+
+        if rating is not None:
+            ratings.append(rating)
+
+    if not ratings:
+        return {
+            "average_rating": None,
+            "category": "Not enough data"
+        }
+
+    average_rating = round(sum(ratings) / len(ratings), 1)
+
+    if average_rating >= 8.0:
+        category = "Highly Rated"
+    elif average_rating >= 7.0:
+        category = "Well Rated"
+    elif average_rating >= 6.0:
+        category = "Moderately Rated"
+    else:
+        category = "Mixed Ratings"
+
+    return {
+        "average_rating": average_rating,
+        "category": category
+    }
+if __name__ == "__main__":
+    test_movies = [
+        {"rating": 8.7},
+        {"rating": 8.5},
+        {"rating": 7.9},
+        {"rating": 9.0}
+    ]
+
+    print(calculate_rating_dna(test_movies))

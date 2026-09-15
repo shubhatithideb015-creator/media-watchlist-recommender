@@ -4,7 +4,7 @@ from flask_cors import CORS
 from database import get_db_connection, init_db
 from omdb import search_media, fetch_media_detail
 from werkzeug.security import generate_password_hash,check_password_hash
-from taste_dna import calculate_genre_dna
+from taste_dna import calculate_genre_dna, calculate_rating_dna
 
 app = Flask(__name__)
 CORS(app)
@@ -195,10 +195,11 @@ def get_taste_dna():
                 watchlist_items.append(item)
 
         genre_dna = calculate_genre_dna(watchlist_items)
-
+        rating_dna = calculate_rating_dna(watchlist_items)
         return {
             "user_id": user_id,
-            "genre_dna": genre_dna
+            "genre_dna": genre_dna,
+            "rating_dna": rating_dna
         }
 
     except Exception as e:

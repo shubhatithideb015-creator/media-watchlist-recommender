@@ -10,6 +10,7 @@ class Store {
 
     this.state = {
       tasteDna: [],
+      ratingDna: null,
       isLoadingTasteDna: false,
       tasteDnaError: null,
       currentView: 'login',
@@ -198,6 +199,7 @@ class Store {
       const data = await apiService.getTasteDna(userId);
 
       this.state.tasteDna = data.genre_dna || [];
+      this.state.ratingDna = data.rating_dna || null;
       this.state.isLoadingTasteDna = false;
       this.state.tasteDnaError = null;
 
