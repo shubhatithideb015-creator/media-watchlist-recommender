@@ -5,6 +5,7 @@ from database import get_db_connection, init_db
 from omdb import search_media, fetch_media_detail
 from werkzeug.security import generate_password_hash,check_password_hash
 from taste_dna import calculate_genre_dna, calculate_rating_dna
+from recommender import get_recommendations
 
 app = Flask(__name__)
 CORS(app)
@@ -24,7 +25,8 @@ CURATED_MEDIA = [
     "tt1375666",
     "tt0468569",
     "tt0903747",
-    "tt0944947"
+    "tt0944947",
+    "tt0133093"
 ]
 
 
@@ -214,6 +216,85 @@ def get_taste_dna():
         return {
             "error": "Internal server error"
         }, 500
+
+
+# ==================================================
+# RECOMMENDATIONS ENDPOINT
+# ==================================================
+
+
+@app.route('/api/recommendations', methods=['GET'])
+def get_user_recommendations():
+    """
+    GET /api/recommendations?user_id=<id>
+    Returns a ranked list of recommended media items based on the
+    user's watchlist, using the content-based recommender engine.
+    """
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return {"error": "user_id is required"}, 400
+
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        return {"error": "user_id must be an integer"}, 400
+
+    connection = None
+    try:
+        # 1. Fetch user's watchlist IMDb IDs from the database
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            'SELECT media_id FROM watchlist WHERE user_id = ?',
+            (user_id,)
+        )
+        rows = cursor.fetchall()
+        connection.close()
+        connection = None
+
+        # 2. Fetch full details for each watchlist item from OMDb
+        watchlist_items = []
+        for row in rows:
+            item = fetch_media_detail(row[0])
+            if item is not None:
+                watchlist_items.append(item)
+
+        # 3. Fetch full details for candidate media from the curated catalog
+        candidate_items = []
+        for imdb_id in CURATED_MEDIA:
+            item = fetch_media_detail(imdb_id)
+            if item is not None:
+                candidate_items.append(item)
+
+        # 4. Run the recommendation engine (already filters out watchlist items)
+        recommendations = get_recommendations(watchlist_items, candidate_items)
+
+        # 5. Format and return results
+        results = [
+            {
+                "media": rec["media"],
+                "score": rec["score"]
+            }
+            for rec in recommendations
+        ]
+
+        return {
+            "user_id": user_id,
+            "recommendations": results
+        }, 200
+
+    except Exception as e:
+        if connection:
+            connection.close()
+        app.logger.error(
+            f"Error in get_user_recommendations: {e}",
+            exc_info=True
+        )
+        return {"error": "Internal server error"}, 500
+
+
+@app.route('/api/watchlist', methods=['GET'])
 def get_watchlist():
     connection = None
     try:
