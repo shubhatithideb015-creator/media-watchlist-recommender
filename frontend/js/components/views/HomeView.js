@@ -5,6 +5,7 @@
 import { store } from '../../state/store.js';
 import { MediaCard } from '../MediaCard.js';
 import { FALLBACK_POSTER } from '../../services/api.js';
+import { groupRecommendationSections } from '../../services/recommendationEngine.js';
 
 export class HomeView {
   constructor(container) {
@@ -232,61 +233,44 @@ export class HomeView {
 
                     <!-- PERSONALIZED RECOMMENDATIONS -->
         ${state.isLoggedIn ? `
-        <div id="home-recommendations-section">
-
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-cinematic text-lg sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-              <span class="text-[#E50914]">✦</span>
-              Top Picks For You
-            </h3>
-          </div>
-
+        <div id="home-recommendations-section" class="space-y-8">
           ${isLoadingRecs ? `
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4 animate-pulse">
-              ${Array(5).fill(0).map(() => `
-                <div class="bg-[#14151C] border border-[#21232E] rounded-2xl overflow-hidden">
-                  <div class="aspect-[2/3] bg-[#1E202B] w-full"></div>
-                  <div class="p-3 space-y-2">
-                    <div class="h-3 bg-[#242634] rounded w-1/3"></div>
-                    <div class="h-4 bg-[#242634] rounded w-3/4"></div>
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-cinematic text-lg sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                  <span class="text-[#E50914]">✦</span>
+                  Top Picks For You
+                </h3>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4 animate-pulse">
+                ${Array(5).fill(0).map(() => `
+                  <div class="bg-[#14151C] border border-[#21232E] rounded-2xl overflow-hidden">
+                    <div class="aspect-[2/3] bg-[#1E202B] w-full"></div>
+                    <div class="p-3 space-y-2">
+                      <div class="h-3 bg-[#242634] rounded w-1/3"></div>
+                      <div class="h-4 bg-[#242634] rounded w-3/4"></div>
+                    </div>
                   </div>
-                </div>
-              `).join('')}
+                `).join('')}
+              </div>
             </div>
-
           ` : recsError ? `
             <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-950/30 border border-red-800/30 text-red-400 text-xs">
               <span>Could not load recommendations: ${recsError}</span>
             </div>
-
           ` : recommendations.length === 0 ? `
-            <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#14151C] border border-[#21232E] text-[#8E92A0] text-xs">
-              <span>Add titles to your Watchlist to get personalised recommendations.</span>
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-cinematic text-lg sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                  <span class="text-[#E50914]">✦</span>
+                  Top Picks For You
+                </h3>
+              </div>
+              <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#14151C] border border-[#21232E] text-[#8E92A0] text-xs">
+                <span>Add titles to your Watchlist to get personalised recommendations.</span>
+              </div>
             </div>
-
-          ` : `
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4" id="home-recs-grid">
-
-              ${recommendations.slice(0, 5).map((rec) => {
-                const scorePercent = rec.score != null
-                  ? Math.round(rec.score * 100)
-                  : null;
-
-                return `
-                  <div class="relative rec-card-wrapper">
-                    ${MediaCard.render(rec.media)}
-
-                    ${scorePercent !== null ? `
-                      <div class="absolute bottom-[4.5rem] left-2.5 px-2 py-0.5 rounded-md bg-[#E50914]/90 backdrop-blur-md text-[10px] font-bold text-white pointer-events-none">
-                        ${scorePercent}% match
-                      </div>
-                    ` : ''}
-                  </div>
-                `;
-              }).join('')}
-
-            </div>
-          `}
+          ` : this.renderRecommendationSections(recommendations)}
         </div>
         ` : ''}
 
@@ -294,6 +278,53 @@ export class HomeView {
       `;
 
     this.attachEvents();
+  }
+
+  renderRecommendationSections(recommendations) {
+    const { topPicks, becauseWatched, becauseLike } =
+      groupRecommendationSections(recommendations);
+
+    const renderRow = (title, recs, gridId) => {
+      if (!recs || recs.length === 0) return '';
+      return `
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-cinematic text-lg sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span class="text-[#E50914]">✦</span>
+              ${title}
+            </h3>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4" id="${gridId}">
+            ${recs.map((rec) => {
+              const scorePercent = rec.score != null ? Math.round(rec.score * 100) : null;
+              return `
+                <div class="relative rec-card-wrapper">
+                  ${MediaCard.render(rec.media)}
+                  ${scorePercent !== null ? `
+                    <div class="absolute bottom-[4.5rem] left-2.5 px-2 py-0.5 rounded-md bg-[#E50914]/90 backdrop-blur-md text-[10px] font-bold text-white pointer-events-none">
+                      ${scorePercent}% match
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    };
+
+    const watchedTitle = becauseWatched[0]?.anchor_title
+      ? `Because You Watched ${becauseWatched[0].anchor_title}`
+      : 'Because You Watched';
+    const likeTitle = becauseLike[0]?.matched_genre
+      ? `Because You Like ${becauseLike[0].matched_genre}`
+      : 'Because You Like';
+
+    return `
+      ${renderRow('Top Picks For You', topPicks, 'home-recs-grid')}
+      ${renderRow(watchedTitle, becauseWatched, 'home-recs-watched-grid')}
+      ${renderRow(likeTitle, becauseLike, 'home-recs-like-grid')}
+    `;
   }
 
   attachEvents() {

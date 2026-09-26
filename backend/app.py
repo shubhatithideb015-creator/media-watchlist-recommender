@@ -294,24 +294,62 @@ def get_user_recommendations():
             if item is not None:
                 watchlist_items.append(item)
 
-        # 3. Fetch full details for candidate media from the curated catalog
-        candidate_items = []
+        # 3. Candidate pool: curated catalog plus OMDb searches
+        #    for the user's top watchlist genres so results are not
+        #    a fixed five-title list.
+        candidate_map = {}
         for imdb_id in CURATED_MEDIA:
             item = fetch_media_detail(imdb_id)
-            if item is not None:
-                candidate_items.append(item)
+            if item is not None and item.get("id"):
+                candidate_map[item["id"]] = item
+
+        genre_dna = calculate_genre_dna(watchlist_items)
+        search_queries = []
+        for watched in watchlist_items[:3]:
+            title = (watched.get("title") or "").strip()
+            if title:
+                search_queries.append(title)
+        for genre_entry in genre_dna[:2]:
+            genre_name = (genre_entry.get("genre") or "").strip()
+            if genre_name:
+                search_queries.append(genre_name)
+
+        extra_added = 0
+        for query in search_queries:
+            if extra_added >= 12:
+                break
+            for hit in search_media(query):
+                hit_id = hit.get("id")
+                if not hit_id or hit_id in candidate_map:
+                    continue
+                detail = fetch_media_detail(hit_id) or hit
+                if detail.get("id"):
+                    candidate_map[detail["id"]] = detail
+                    extra_added += 1
+                if extra_added >= 12:
+                    break
+
+        candidate_items = list(candidate_map.values())
 
         # 4. Run the recommendation engine (already filters out watchlist items)
         recommendations = get_recommendations(watchlist_items, candidate_items)
 
-        # 5. Format and return results
-        results = [
-            {
+        # 5. Format and return results (media + score stay required)
+        results = []
+        for rec in recommendations:
+            entry = {
                 "media": rec["media"],
                 "score": rec["score"]
             }
-            for rec in recommendations
-        ]
+            if rec.get("section"):
+                entry["section"] = rec["section"]
+            if rec.get("reason"):
+                entry["reason"] = rec["reason"]
+            if rec.get("anchor_title"):
+                entry["anchor_title"] = rec["anchor_title"]
+            if rec.get("matched_genre"):
+                entry["matched_genre"] = rec["matched_genre"]
+            results.append(entry)
 
         return {
             "user_id": user_id,
@@ -365,63 +403,12 @@ def get_watchlist():
         return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
 
 
-@app.route('/api/watchlist', methods=['POST'])
-def add_to_watchlist():
-    connection = None
-    try:
-        data = request.get_json(silent=True)
-
-        if data is None:
-            return {"error": "Request body is required"}, 400
-
-        if "media_id" not in data or not data["media_id"] or not str(data["media_id"]).strip():
-            return {"error": "media_id is required"}, 400
-
-        if "user_id" not in data or data["user_id"] is None:
-            return {"error": "user_id is required"}, 400
-
-        try:
-            user_id = int(data["user_id"])
-        except (ValueError, TypeError):
-            return {"error": "user_id must be an integer"}, 400
-
-        media_id = str(data["media_id"]).strip()
-
-        # Check if media exists in OMDb
-        item = fetch_media_detail(media_id)
-        if item is None:
-            return {"error": "Media not found"}, 404
-
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
-        # Check if already in watchlist for this user
-        cursor.execute('SELECT id FROM watchlist WHERE user_id = ? AND media_id = ?', (user_id, media_id))
-        existing = cursor.fetchone()
-        if existing is not None:
-            connection.close()
-            connection = None
-            return {"error": "Media already in watchlist"}, 409
-
-        # Add IMDb ID to watchlist with user_id
-        cursor.execute('INSERT INTO watchlist (user_id, media_id) VALUES (?, ?)', (user_id, media_id))
-        connection.commit()
-        connection.close()
-        connection = None
-
-        return {"message": "Media added to watchlist"}, 201
-
-    except Exception as e:
-        if connection:
-            connection.close()
-        app.logger.error(f"Error in add_to_watchlist: {e}", exc_info=True)
-        return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
 
 
 @app.route('/api/watchlist/<media_id>', methods=['DELETE'])
 def remove_from_watchlist(media_id):
     connection = None
-    try:
+    try:    
         user_id = request.args.get('user_id')
         if not user_id:
             return {"error": "user_id is required"}, 400

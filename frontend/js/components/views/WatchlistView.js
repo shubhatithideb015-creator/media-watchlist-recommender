@@ -82,9 +82,16 @@ export class WatchlistView {
       let personalityDesc = "You enjoy exploring a variety of cinematic experiences.";
 
       if (ratingDna) {
+        const typeLabel =
+          ratingDna.preferred_media_type === 'series'
+            ? 'series'
+            : ratingDna.preferred_media_type === 'movie'
+            ? 'films'
+            : 'titles';
+
         if (ratingDna.average_rating >= 8.0) {
           personalityTitle = "Critically Acclaimed " + topGenre.genre + " Fan";
-          personalityDesc = "You have a highly refined taste, favoring top-tier " + topGenre.genre + " masterpieces.";
+          personalityDesc = "You have a highly refined taste, favoring top-tier " + topGenre.genre + " " + typeLabel + ".";
         } else if (topGenre.percentage > 40) {
           personalityTitle = "Die-Hard " + topGenre.genre + " Enthusiast";
           personalityDesc = "Your watchlist is heavily dominated by " + topGenre.genre + ". You know exactly what you like!";
@@ -177,7 +184,7 @@ export class WatchlistView {
                       <span class="text-xs font-mono font-medium text-[#E50914]">${item.percentage}%</span>
                     </div>
                     <div class="w-full bg-white/5 h-1.5 sm:h-2 rounded-full overflow-hidden">
-                      <div class="h-full rounded-full bg-gradient-to-r from-red-900 to-[#E50914] origin-left" style="width: \${item.percentage}%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                      <div class="h-full rounded-full bg-gradient-to-r from-red-900 to-[#E50914] origin-left" style="width: ${item.percentage}%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);"></div>
                     </div>
                   </div>
                 `).join('')}

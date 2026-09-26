@@ -234,6 +234,10 @@ class MediaApiService {
     return recs.map((rec) => ({
       media: normalizeMedia(rec.media),
       score: rec.score,
+      section: rec.section || null,
+      reason: rec.reason || null,
+      anchor_title: rec.anchor_title || null,
+      matched_genre: rec.matched_genre || null,
     })).filter((rec) => rec.media !== null);
   }
 
