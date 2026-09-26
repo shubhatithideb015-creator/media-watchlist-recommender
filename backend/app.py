@@ -21,12 +21,46 @@ def home():
 
 # Curated catalog of IMDb IDs for /api/media endpoint
 CURATED_MEDIA = [
-    "tt0816692",
-    "tt1375666",
-    "tt0468569",
-    "tt0903747",
-    "tt0944947",
-    "tt0133093"
+
+    # Sci-Fi / Adventure
+    "tt0816692",  # Interstellar
+    "tt1375666",  # Inception
+    "tt0133093",  # The Matrix
+    "tt1160419",  # Dune
+    "tt3659388",  # The Martian
+
+    # Action / Crime / Thriller
+    "tt0468569",  # The Dark Knight
+    "tt0903747",  # Breaking Bad
+    "tt1475582",  # Sherlock
+    "tt2861424",  # Rick and Morty
+
+    # Drama
+    "tt0111161",  # The Shawshank Redemption
+    "tt0109830",  # Forrest Gump
+    "tt0167260",  # LOTR: Return of the King
+    "tt0137523",  # Fight Club
+    "tt0110912",  # Pulp Fiction
+
+    # Comedy
+    "tt0108778",  # Friends
+    "tt0460649",  # How I Met Your Mother
+    "tt0386676",  # The Office
+    "tt0898266",  # The Big Bang Theory
+    "tt2575988",  # Silicon Valley
+
+    # Romance / Drama
+    "tt0110357",  # The Lion King
+    "tt0338013",  # Eternal Sunshine of the Spotless Mind
+    "tt0102926",  # The Silence of the Lambs
+
+    # Indian movies / entertainment
+    "tt1187043",  # 3 Idiots
+    "tt0986264",  # Taare Zameen Par
+    "tt5074352",  # Dangal
+    "tt1954470",  # Gully Boy
+    "tt2338150",  # PK
+
 ]
 
 

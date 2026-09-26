@@ -1,6 +1,6 @@
 // js/services/api.js
 // CineMatch Backend API Service
-// Connects to Flask backend (Endpoints: /api/media, /api/search, /api/watchlist, /api/health)
+// Connects to Flask backend (Endpoints: /api/media, /api/search, /api/watchlist, /api/health, /api/recommendations)
 
 /**
  * Resolves the API base URL.
@@ -213,6 +213,30 @@ class MediaApiService {
 
     return data;
   }
+  /**
+   * Fetch recommendations from backend GET /api/recommendations?user_id=<id>
+   * Returns: { user_id, recommendations: [{ media, score }] }
+   */
+  async getRecommendations(userId) {
+    if (!userId) {
+      throw new Error('user_id is required');
+    }
+    const baseUrl = getApiBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/api/recommendations?user_id=${encodeURIComponent(userId)}`
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch recommendations (Status: ${response.status})`);
+    }
+    const data = await response.json();
+    const recs = Array.isArray(data.recommendations) ? data.recommendations : [];
+    // Normalize media within each recommendation, keep score
+    return recs.map((rec) => ({
+      media: normalizeMedia(rec.media),
+      score: rec.score,
+    })).filter((rec) => rec.media !== null);
+  }
+
   /**
    * Add movie to watchlist via backend POST /api/watchlist
    *  * Request body: { "media_id": "<imdb_id>", "user_id": <user_id> }

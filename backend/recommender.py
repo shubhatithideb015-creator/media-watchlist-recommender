@@ -1,223 +1,407 @@
-def build_user_profile(watchlist_items):
+import math
+import re
+from collections import Counter
+
+
+# --------------------------------------------------
+# TEXT PROCESSING
+# --------------------------------------------------
+
+def tokenize(text):
     """
-    Build a user preference profile from their watchlist.
+    Convert text into simple lowercase words.
     """
 
-    genre_counts = {}
-    ratings = []
-    media_type_counts = {}
-
-    for item in watchlist_items:
-
-        # -------------------------
-        # Genre preferences
-        # -------------------------
-        genre_text = item.get("genre") or ""
-
-        genres = [
-            genre.strip()
-            for genre in genre_text.split(",")
-            if genre.strip()
-        ]
-
-        for genre in genres:
-            genre_counts[genre] = genre_counts.get(genre, 0) + 1
-
-        # -------------------------
-        # Rating preference
-        # -------------------------
-        rating = item.get("rating")
-
-        if rating is not None:
-            ratings.append(float(rating))
-
-        # -------------------------
-        # Movie / Series preference
-        # -------------------------
-        media_type = item.get("media_type")
-
-        if media_type:
-            media_type_counts[media_type] = (
-                media_type_counts.get(media_type, 0) + 1
-            )
-
-    # -------------------------
-    # Normalize genre weights
-    # -------------------------
-    total_genres = sum(genre_counts.values())
-
-    if total_genres > 0:
-        genre_preferences = {
-            genre: round(count / total_genres, 3)
-            for genre, count in genre_counts.items()
-        }
-    else:
-        genre_preferences = {}
-
-    # -------------------------
-    # Average rating
-    # -------------------------
-    if ratings:
-        average_rating = round(sum(ratings) / len(ratings), 2)
-    else:
-        average_rating = None
-
-    # -------------------------
-    # Preferred media type
-    # -------------------------
-    if media_type_counts:
-        preferred_media_type = max(
-            media_type_counts,
-            key=media_type_counts.get
-        )
-    else:
-        preferred_media_type = None
-
-    return {
-        "genre_preferences": genre_preferences,
-        "average_rating": average_rating,
-        "preferred_media_type": preferred_media_type
-    }
-def calculate_genre_score(user_profile, media_item):
-    genre_preferences = user_profile["genre_preferences"]
-
-    genre_text = media_item.get("genre") or ""
-
-    genres = [
-        genre.strip()
-        for genre in genre_text.split(",")
-        if genre.strip()
-    ]
-
-    if not genres:
-        return 0.0
-
-    matched_weight = sum(
-        genre_preferences.get(genre, 0)
-        for genre in genres
+    words = re.findall(
+        r"[a-z0-9]+",
+        (text or "").lower()
     )
 
-    return min(matched_weight, 1.0)
-def calculate_rating_score(user_profile, media_item):
-    user_average = user_profile.get("average_rating")
-    media_rating = media_item.get("rating")
+    return [
+        word
+        for word in words
+        if len(word) > 2
+    ]
 
-    if user_average is None or media_rating is None:
+
+def build_content_text(item):
+    """
+    Build searchable text from a media item.
+    """
+
+    title = item.get("title") or ""
+    description = item.get("description") or ""
+    genre = item.get("genre") or ""
+
+    return f"{title} {genre} {description}"
+
+
+# --------------------------------------------------
+# GENRE SIMILARITY
+# --------------------------------------------------
+
+def get_genres(item):
+    """
+    Return genres as a set.
+    """
+
+    genre_text = item.get("genre") or ""
+
+    return {
+        genre.strip().lower()
+        for genre in genre_text.split(",")
+        if genre.strip()
+    }
+
+
+def calculate_genre_similarity(item_a, item_b):
+    """
+    Calculate Jaccard similarity between two genre sets.
+    """
+
+    genres_a = get_genres(item_a)
+    genres_b = get_genres(item_b)
+
+    if not genres_a or not genres_b:
+        return 0.0
+
+    intersection = genres_a & genres_b
+    union = genres_a | genres_b
+
+    return round(
+        len(intersection) / len(union),
+        3
+    )
+
+
+# --------------------------------------------------
+# TF-IDF
+# --------------------------------------------------
+
+def build_tfidf_vectors(documents):
+    """
+    Build simple TF-IDF vectors without external libraries.
+    """
+
+    tokenized_documents = [
+        tokenize(document)
+        for document in documents
+    ]
+
+    document_frequency = Counter()
+
+    for tokens in tokenized_documents:
+
+        for word in set(tokens):
+            document_frequency[word] += 1
+
+    total_documents = len(tokenized_documents)
+
+    vectors = []
+
+    for tokens in tokenized_documents:
+
+        term_frequency = Counter(tokens)
+
+        total_words = len(tokens)
+
+        if total_words == 0:
+            vectors.append({})
+            continue
+
+        vector = {}
+
+        for word, count in term_frequency.items():
+
+            tf = count / total_words
+
+            idf = math.log(
+                (1 + total_documents)
+                / (1 + document_frequency[word])
+            ) + 1
+
+            vector[word] = tf * idf
+
+        # Normalize vector
+        magnitude = math.sqrt(
+            sum(value * value for value in vector.values())
+        )
+
+        if magnitude > 0:
+
+            vector = {
+                word: value / magnitude
+                for word, value in vector.items()
+            }
+
+        vectors.append(vector)
+
+    return vectors
+
+
+def calculate_cosine_similarity(vector_a, vector_b):
+    """
+    Calculate cosine similarity between two TF-IDF vectors.
+    """
+
+    if not vector_a or not vector_b:
+        return 0.0
+
+    # Iterate over smaller vector
+    if len(vector_a) > len(vector_b):
+        vector_a, vector_b = vector_b, vector_a
+
+    similarity = sum(
+        value * vector_b.get(word, 0.0)
+        for word, value in vector_a.items()
+    )
+
+    return round(
+        max(0.0, min(similarity, 1.0)),
+        3
+    )
+
+
+# --------------------------------------------------
+# RATING SIMILARITY
+# --------------------------------------------------
+
+def calculate_rating_similarity(item_a, item_b):
+    """
+    Compare the ratings of two media items.
+    """
+
+    rating_a = item_a.get("rating")
+    rating_b = item_b.get("rating")
+
+    if rating_a is None or rating_b is None:
         return 0.5
 
     difference = abs(
-        float(media_rating) - float(user_average)
+        float(rating_a) - float(rating_b)
     )
 
-    score = max(0.0, 1.0 - (difference / 5.0))
+    score = max(
+        0.0,
+        1.0 - (difference / 5.0)
+    )
 
     return round(score, 3)
 
-def calculate_media_type_score(user_profile, media_item):
-    preferred_type = user_profile.get("preferred_media_type")
-    media_type = media_item.get("media_type")
 
-    if not preferred_type or not media_type:
+# --------------------------------------------------
+# MEDIA TYPE SIMILARITY
+# --------------------------------------------------
+
+def calculate_media_type_similarity(item_a, item_b):
+    """
+    Compare movie/series type.
+    """
+
+    type_a = item_a.get("media_type")
+    type_b = item_b.get("media_type")
+
+    if not type_a or not type_b:
         return 0.5
 
-    if preferred_type.lower() == media_type.lower():
+    if type_a.lower() == type_b.lower():
         return 1.0
 
-    return 0.0 
-def calculate_final_score(user_profile, media_item):
-    genre_score = calculate_genre_score(user_profile,media_item
-)
+    return 0.0
 
-    rating_score = calculate_rating_score(user_profile,media_item
-)
 
-    media_type_score = calculate_media_type_score(user_profile,media_item
-)
+# --------------------------------------------------
+# ITEM SIMILARITY
+# --------------------------------------------------
 
-    final_score = (
-        0.50 * genre_score
-        + 0.30 * rating_score
-        + 0.20 * media_type_score
+def calculate_item_similarity(
+    watched_item,
+    candidate_item,
+    content_similarity
+):
+    """
+    Calculate similarity between one watched item
+    and one candidate item.
+    """
+
+    genre_score = calculate_genre_similarity(
+        watched_item,
+        candidate_item
     )
 
-    return round(final_score, 4)  
-def get_recommendations(watchlist_items, candidate_items, limit=10):
-    user_profile = build_user_profile(watchlist_items)
+    rating_score = calculate_rating_similarity(
+        watched_item,
+        candidate_item
+    )
 
-    recommendations = []
+    media_type_score = calculate_media_type_similarity(
+        watched_item,
+        candidate_item
+    )
+
+    final_score = (
+        0.50 * content_similarity
+        + 0.30 * genre_score
+        + 0.15 * rating_score
+        + 0.05 * media_type_score
+    )
+
+    return round(final_score, 4)
+
+
+# --------------------------------------------------
+# RECOMMENDATIONS
+# --------------------------------------------------
+
+def get_recommendations(
+    watchlist_items,
+    candidate_items,
+    limit=10
+):
+    """
+    Generate recommendations based on content
+    similarity to the user's watchlist.
+    """
+
+    if not watchlist_items:
+        return []
 
     watched_ids = {
         item.get("id") or item.get("media_id")
         for item in watchlist_items
     }
 
-    for media_item in candidate_items:
+    # ----------------------------------------------
+    # Build one TF-IDF corpus
+    # ----------------------------------------------
+
+    all_items = watchlist_items + candidate_items
+
+    documents = [
+        build_content_text(item)
+        for item in all_items
+    ]
+
+    vectors = build_tfidf_vectors(documents)
+
+    watchlist_count = len(watchlist_items)
+
+    watchlist_vectors = vectors[:watchlist_count]
+    candidate_vectors = vectors[watchlist_count:]
+
+    recommendations = []
+
+    # ----------------------------------------------
+    # Compare every candidate with watchlist
+    # ----------------------------------------------
+
+    for index, media_item in enumerate(candidate_items):
 
         media_id = media_item.get("id")
 
-        # Don't recommend something already in the watchlist
+        # Never recommend something already watched
         if media_id in watched_ids:
             continue
 
-        score = calculate_final_score(
-            user_profile,
-            media_item
-        )
+        candidate_vector = candidate_vectors[index]
+        scores = []
 
+        for watch_index, watched_item in enumerate(
+            watchlist_items
+        ):
+
+            watched_vector = watchlist_vectors[watch_index]
+
+            content_score = calculate_cosine_similarity(
+                watched_vector,
+                candidate_vector
+            )
+
+            score = calculate_item_similarity(
+                watched_item,
+                media_item,
+                content_score
+            )
+
+            scores.append(score)
+
+        if scores:
+            best_score = sum(scores) / len(scores)
+        else:
+            best_score = 0.0
+        
         recommendations.append({
             "media": media_item,
-            "score": score
+            "score": best_score
         })
+    # ----------------------------------------------
+    # Highest similarity first
+    # ----------------------------------------------
 
-    # Highest score first
     recommendations.sort(
         key=lambda item: item["score"],
         reverse=True
     )
+
     return recommendations[:limit]
+
+
+# --------------------------------------------------
+# LOCAL TEST
+# --------------------------------------------------
+
 if __name__ == "__main__":
 
     watchlist = [
+
         {
             "id": "1",
+            "title": "Interstellar",
             "genre": "Sci-Fi, Drama",
+            "description": (
+                "A team of explorers travel through "
+                "a wormhole in space to ensure humanity's survival."
+            ),
             "rating": 8.7,
             "media_type": "movie"
         },
+
         {
             "id": "2",
-            "genre": "Sci-Fi, Thriller",
-            "rating": 8.8,
-            "media_type": "movie"
-        },
-        {
-            "id": "3",
-            "genre": "Drama",
-            "rating": 8.3,
+            "title": "The Martian",
+            "genre": "Sci-Fi, Drama",
+            "description": (
+                "An astronaut becomes stranded on Mars "
+                "and must survive until he can be rescued."
+            ),
+            "rating": 8.0,
             "media_type": "movie"
         }
     ]
 
     candidates = [
+
         {
-            "id": "4",
-            "title": "The Martian",
-            "genre": "Sci-Fi, Drama",
-            "rating": 8.0,
-            "media_type": "movie"
-        },
-        {
-            "id": "5",
-            "title": "Random Comedy",
-            "genre": "Comedy",
-            "rating": 6.0,
-            "media_type": "movie"
-        },
-        {
-            "id": "6",
+            "id": "3",
             "title": "Arrival",
             "genre": "Sci-Fi, Drama",
+            "description": (
+                "A linguist works with scientists "
+                "to communicate with mysterious aliens."
+            ),
             "rating": 8.0,
+            "media_type": "movie"
+        },
+
+        {
+            "id": "4",
+            "title": "Random Comedy",
+            "genre": "Comedy",
+            "description": (
+                "A group of friends get into "
+                "funny situations."
+            ),
+            "rating": 6.0,
             "media_type": "movie"
         }
     ]
@@ -228,8 +412,9 @@ if __name__ == "__main__":
     )
 
     for result in results:
+
         print(
             result["media"]["title"],
             "->",
             result["score"]
-        )  
+        )

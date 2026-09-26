@@ -30,6 +30,11 @@ class Store {
       isLoadingWatchlist: false,
       watchlistError: null,
 
+      // Recommendations from GET /api/recommendations
+      recommendations: [],
+      isLoadingRecommendations: false,
+      recommendationsError: null,
+
       // Search & Filters
       searchQuery: '',
       activeFilter: 'all', // 'all' | 'movies' | 'tv'
@@ -102,6 +107,7 @@ class Store {
     this.notify();
 
     this.loadTasteDna();
+    this.loadRecommendations();
   }
   /**
    * Logout user and clear authentication state
@@ -181,6 +187,45 @@ class Store {
       return [];
     }
   }
+  /**
+   * Fetch recommendations from backend GET /api/recommendations
+   */
+  async loadRecommendations() {
+    this.state.isLoadingRecommendations = true;
+    this.state.recommendationsError = null;
+    this.notify();
+
+    try {
+      const userId = this.state.currentUser?.id;
+
+      if (!userId) {
+        this.state.isLoadingRecommendations = false;
+        this.state.recommendations = [];
+        this.notify();
+        return [];
+      }
+
+      const recs = await apiService.getRecommendations(userId);
+      this.state.recommendations = recs;
+      this.state.isLoadingRecommendations = false;
+      this.state.recommendationsError = null;
+
+      // Merge recommended media into mediaList for detail lookups
+      for (const rec of recs) {
+        if (rec.media) this.addExternalMedia(rec.media);
+      }
+
+      this.notify();
+      return recs;
+    } catch (err) {
+      console.error('Failed to load recommendations:', err);
+      this.state.isLoadingRecommendations = false;
+      this.state.recommendationsError = err.message || 'Unable to load recommendations.';
+      this.notify();
+      return [];
+    }
+  }
+
   async loadTasteDna() {
     this.state.isLoadingTasteDna = true;
     this.state.tasteDnaError = null;
