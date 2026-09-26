@@ -106,6 +106,7 @@ class Store {
 
     this.notify();
 
+    this.loadWatchlist();
     this.loadTasteDna();
     this.loadRecommendations();
   }
@@ -292,6 +293,8 @@ class Store {
         this.addExternalMedia(mediaItem);
         this.showToast(`Added "${mediaItem.title}" to Watchlist`, 'success');
         this.notify();
+        this.loadTasteDna();
+        this.loadRecommendations();
       } else if (res.status === 409) {
         if (!this.isInWatchlist(mediaId)) {
           this.state.watchlist = [...this.state.watchlist, mediaItem];
@@ -327,6 +330,8 @@ class Store {
 
       await apiService.removeFromWatchlist(mediaId, userId);
       this.showToast(`Removed "${title}" from Watchlist`, 'info');
+      this.loadTasteDna();
+      this.loadRecommendations();
     } catch (err) {
       console.error('Remove from watchlist error:', err);
       // Revert if API failed
