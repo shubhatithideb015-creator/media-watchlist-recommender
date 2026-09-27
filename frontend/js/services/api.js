@@ -8,14 +8,14 @@
  * Can be overridden globally via window.__API_BASE_URL__.
  */
 export function getApiBaseUrl() {
-  if (typeof window !== 'undefined' && window.__API_BASE_URL__) {
-    return window.__API_BASE_URL__.replace(/\/+$/, '');
-  }
   if (
     typeof window !== 'undefined' &&
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ) {
     return 'http://localhost:5000';
+  }
+  if (typeof window !== 'undefined' && window.__API_BASE_URL__) {
+    return window.__API_BASE_URL__.replace(/\/+$/, '');
   }
   return '';
 }
@@ -164,13 +164,22 @@ class MediaApiService {
       });
     }
 
-    if (genre && genre !== 'All') {
+    if (genre && genre !== 'All' && genre !== 'all') {
       const gLower = genre.toLowerCase();
-      results = results.filter(
-        (item) =>
-          item.genre?.toLowerCase().includes(gLower) ||
-          (item.genres && item.genres.some((g) => g.toLowerCase().includes(gLower)))
-      );
+
+      results = results.filter((item) => {
+        const itemGenres = [];
+
+        if (item.genre) {
+          itemGenres.push(...item.genre.split(',').map((g) => g.trim().toLowerCase()));
+        }
+
+        if (Array.isArray(item.genres)) {
+          itemGenres.push(...item.genres.map((g) => String(g).trim().toLowerCase()));
+        }
+
+        return itemGenres.some((g) => g.includes(gLower));
+      });
     }
 
     this.searchCache.set(cacheKey, results);
