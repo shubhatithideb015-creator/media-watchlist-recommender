@@ -382,7 +382,7 @@ def get_watchlist():
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        cursor.execute('SELECT media_id FROM watchlist WHERE user_id = ?', (user_id,))
+        cursor.execute('SELECT media_id, status, note FROM watchlist WHERE user_id = ?', (user_id,))
         rows = cursor.fetchall()
         connection.close()
         connection = None
@@ -390,8 +390,13 @@ def get_watchlist():
         watchlist_items = []
         for row in rows:
             media_id = row[0]
+            status = row[1]
+            note = row[2]
             item = fetch_media_detail(media_id)
             if item is not None:
+                # attach watch status and personal note
+                item["watch_status"] = status
+                item["note"] = note
                 watchlist_items.append(item)
 
         return watchlist_items
@@ -447,6 +452,66 @@ def remove_from_watchlist(media_id):
             connection.close()
         app.logger.error(f"Error in remove_from_watchlist: {e}", exc_info=True)
         return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
+
+# --- Update watchlist entry (status and/or note) ---
+@app.route('/api/watchlist/<media_id>', methods=['PATCH'])
+def update_watchlist_entry(media_id):
+    connection = None
+    try:
+        user_id = request.args.get('user_id')
+        if not user_id:
+            return {"error": "user_id is required"}, 400
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            return {"error": "user_id must be an integer"}, 400
+
+        data = request.get_json(silent=True) or {}
+        status = data.get('status')
+        note = data.get('note')
+        if status is None and note is None:
+            return {"error": "At least one of 'status' or 'note' must be provided"}, 400
+        if status is not None and status not in ('watched', 'to-watch'):
+            return {"error": "Invalid status value"}, 400
+
+        if not media_id or not str(media_id).strip():
+            return {"error": "media_id is required"}, 400
+        target_id = str(media_id).strip()
+
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute('SELECT id FROM watchlist WHERE user_id = ? AND media_id = ?', (user_id, target_id))
+        existing = cursor.fetchone()
+        if existing is None:
+            connection.close()
+            return {"error": "Media not in watchlist"}, 404
+
+        fields = []
+        params = []
+        if status is not None:
+            fields.append('status = ?')
+            params.append(status)
+        if note is not None:
+            fields.append('note = ?')
+            params.append(note)
+        params.extend([user_id, target_id])
+        sql = f"UPDATE watchlist SET {', '.join(fields)} WHERE user_id = ? AND media_id = ?"
+        cursor.execute(sql, tuple(params))
+        connection.commit()
+        connection.close()
+        response = {"message": "Watchlist entry updated"}
+        if status is not None:
+            response["status"] = status
+        if note is not None:
+            response["note"] = note
+        return response, 200
+    except Exception as e:
+        if connection:
+            connection.close()
+        app.logger.error(f"Error in update_watchlist_entry: {e}", exc_info=True)
+        return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
+
+# Duplicate toggle endpoint removed – functionality now handled by update_watchlist_entry
 
 
 if __name__ == '__main__':

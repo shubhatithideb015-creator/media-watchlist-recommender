@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS watchlist (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     media_id TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'to-watch',
+    note TEXT,
     UNIQUE(user_id, media_id),
     FOREIGN KEY(user_id) REFERENCES users(id)
 );

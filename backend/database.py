@@ -62,6 +62,11 @@ def _watchlist_needs_rebuild(cursor):
     if user_id_col is None:
         return True
 
+    # Check for presence of note column
+    note_col = next((col for col in columns if col[1] == "note"), None)
+    if note_col is None:
+        return True
+
     # Check if UNIQUE constraint is on (user_id, media_id) not just media_id
     if "UNIQUE(media_id)" in table_sql and "UNIQUE(user_id, media_id)" not in table_sql:
         return True
