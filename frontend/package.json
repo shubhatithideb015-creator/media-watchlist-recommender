@@ -4,6 +4,7 @@
   "description": "A dark-themed cinematic movie and TV show discovery web application with watchlist management and live metadata search.",
   "main": "server.js",
   "scripts": {
+    "build": "echo 'Static build ready'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
