@@ -154,6 +154,9 @@ def search_media(query):
         return []
 
 
+_MEDIA_CACHE = {}
+
+
 def fetch_media_detail(media_id):
     """
     Fetch full detail for an IMDb ID (e.g. 'tt0816692') from OMDb.
@@ -161,6 +164,10 @@ def fetch_media_detail(media_id):
     """
     if not media_id or not media_id.strip():
         return None
+
+    clean_id = media_id.strip()
+    if clean_id in _MEDIA_CACHE:
+        return _MEDIA_CACHE[clean_id]
 
     try:
         api_key = get_api_key()
@@ -170,19 +177,22 @@ def fetch_media_detail(media_id):
 
     params = {
         "apikey": api_key,
-        "i": media_id.strip(),
+        "i": clean_id,
         "plot": "full"
     }
 
     try:
-        response = requests.get(OMDB_BASE_URL, params=params, timeout=10)
+        response = requests.get(OMDB_BASE_URL, params=params, timeout=5)
         response.raise_for_status()
         data = response.json()
 
         if data.get("Response") == "False":
             return None
 
-        return format_omdb_item(data)
+        formatted = format_omdb_item(data)
+        if formatted:
+            _MEDIA_CACHE[clean_id] = formatted
+        return formatted
 
     except requests.exceptions.RequestException:
         print("Network or HTTP error occurred while fetching OMDb media detail.")

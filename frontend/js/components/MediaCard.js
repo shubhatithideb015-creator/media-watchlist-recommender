@@ -12,7 +12,11 @@ export class MediaCard {
     if (!media) return '';
 
     const isInWatchlist = store.isInWatchlist(media.id);
-    const { className = '', showRemoveBtn = false } = options;
+    const {
+       className = '',
+       showRemoveBtn = false,
+       matchPercent = null
+    } = options;
 
     const posterUrl =
       media.poster_url && media.poster_url !== 'N/A' && media.poster_url.startsWith('http')
@@ -92,16 +96,35 @@ export class MediaCard {
         </div>
 
         <!-- Card Body -->
-        <div class="p-3 sm:p-3.5 flex flex-col flex-1 justify-between">
-          <div>
-            <div class="flex items-center justify-between text-xs text-[#8E92A0] mb-1">
-              <span class="truncate pr-2">${genreText}</span>
-              ${yearText ? `<span class="text-[#717684] flex-shrink-0">${yearText}</span>` : ''}
-            </div>
-            <h3 class="font-cinematic text-sm sm:text-base font-bold text-white group-hover:text-[#E50914] transition-colors line-clamp-1 leading-snug">
-              ${media.title || 'Untitled'}
-            </h3>
-          </div>
+       <!-- Card Body -->
+<div class="px-3 pt-2.5 pb-3 flex flex-col flex-1">
+  <div class="flex items-center gap-2 text-[11px] mb-1.5 min-w-0">
+
+    ${
+      matchPercent !== null
+        ? `<span class="font-bold text-[#46d369] flex-shrink-0">
+            ${matchPercent}% Match
+          </span>`
+        : ''
+    }
+
+    <span class="text-[#8E92A0] truncate">
+      ${genreText}
+    </span>
+
+    ${
+      yearText
+        ? `<span class="text-[#717684] flex-shrink-0">
+            ${yearText}
+          </span>`
+        : ''
+    }
+
+  </div>
+
+  <h3 class="font-cinematic text-sm sm:text-base font-bold text-white group-hover:text-[#E50914] transition-colors line-clamp-1 leading-snug">
+    ${media.title || 'Untitled'}
+  </h3>
 
           ${
             showRemoveBtn

@@ -299,18 +299,9 @@ export class HomeView {
               const scorePercent = rec.score != null ? Math.round(rec.score * 100) : null;
               return `
                 <div class="relative rec-card-wrapper flex flex-col">
-                  ${MediaCard.render(rec.media)}
-                  ${scorePercent !== null ? `
-                    <div class="absolute bottom-[4.5rem] left-2.5 px-2 py-0.5 rounded-md bg-[#E50914]/90 backdrop-blur-md text-[10px] font-bold text-white pointer-events-none">
-                      ${scorePercent}% match
-                    </div>
-                  ` : ''}
-                  ${rec.reason ? `
-                    <div class="mt-1.5 px-2.5 py-1 rounded-xl bg-[#14151C] border border-[#21232E] text-[11px] text-[#A1A1AA] flex items-center gap-1.5 shadow-sm" title="${rec.reason}">
-                      <span class="text-[#E50914] text-xs">✦</span>
-                      <span class="truncate font-medium text-white/90">${rec.reason}</span>
-                    </div>
-                  ` : ''}
+                   ${MediaCard.render(rec.media, {
+    matchPercent: scorePercent
+                 })}
                 </div>
               `;
             }).join('')}

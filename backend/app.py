@@ -5,6 +5,7 @@ BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BACKEND_DIR, ".env"))
 load_dotenv()
 
+from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, request
 from flask_cors import CORS
 from database import get_db_connection, init_db
@@ -152,15 +153,14 @@ def login():
         "user_id": user[0],
         "username": user[1]
     }, 200
+
+
 @app.route('/api/media')
 def media():
     try:
-        media_list = []
-        for imdb_id in CURATED_MEDIA:
-            item = fetch_media_detail(imdb_id)
-            if item is not None:
-                media_list.append(item)
-        return media_list
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            results = list(executor.map(fetch_media_detail, CURATED_MEDIA))
+        return [item for item in results if item is not None]
     except Exception as e:
         app.logger.error(f"Error in media: {e}", exc_info=True)
         return {"error": "Internal server error"}, 500
