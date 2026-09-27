@@ -252,8 +252,8 @@ export class WatchlistView {
         <!-- Watchlist Content (Movies Grid OR Empty State) -->
         ${watchlist.length > 0
         ? `
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4" id="watchlist-grid">
-            ${watchlist.map((media) => MediaCard.render(media, { showRemoveBtn: true })).join('')}
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="watchlist-grid">
+            ${watchlist.map((media) => this.renderWatchlistCard(media, state)).join('')}
           </div>
         `
         : `
@@ -295,8 +295,248 @@ export class WatchlistView {
     this.attachEvents();
   }
 
+  renderWatchlistCard(media, state) {
+    const isWatched = media.watch_status === 'watched';
+    const userRating = store.getUserRating(media.id);
+    const posterUrl =
+      media.poster_url && media.poster_url !== 'N/A' && media.poster_url.startsWith('http')
+        ? media.poster_url
+        : media.poster && media.poster !== 'N/A' && media.poster.startsWith('http')
+        ? media.poster
+        : 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80';
+
+    const genreText =
+      media.genre ||
+      (Array.isArray(media.genres) && media.genres.length > 0 ? media.genres[0] : 'Movie');
+    const yearText = media.release_year || media.year || '';
+
+    return `
+      <div 
+        data-media-id="${media.id}"
+        class="group relative bg-[#14151C] hover:bg-[#181A23] border border-[#21232E] hover:border-[#353849] rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between p-3.5 shadow-lg"
+      >
+        <!-- Top Poster with Status Badge -->
+        <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-[#181922] mb-3 cursor-pointer media-card-clickable" data-media-id="${media.id}">
+          <img 
+            src="${posterUrl}" 
+            alt="${media.title}" 
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80'"
+          />
+          
+          <!-- Status Badge -->
+          <div class="absolute top-2.5 left-2.5">
+            ${isWatched 
+              ? `<span class="px-2 py-1 rounded-md bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 text-[11px] font-bold backdrop-blur-md flex items-center gap-1 shadow-md">✓ Watched</span>`
+              : `<span class="px-2 py-1 rounded-md bg-amber-950/90 border border-amber-500/60 text-amber-300 text-[11px] font-bold backdrop-blur-md flex items-center gap-1 shadow-md">⏳ To-Watch</span>`
+            }
+          </div>
+
+          <!-- Remove Button -->
+          <button 
+            data-action="remove-watchlist" 
+            data-id="${media.id}" 
+            class="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-red-950/90 border border-red-500/50 text-red-300 hover:bg-red-800 text-xs flex items-center justify-center font-bold transition-all shadow-md"
+            title="Remove from Watchlist"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Info -->
+        <div class="mb-3">
+          <div class="flex items-center justify-between text-xs text-[#8E92A0] mb-1">
+            <span class="truncate pr-2">${genreText}</span>
+            ${yearText ? `<span>${yearText}</span>` : ''}
+          </div>
+          <h3 
+            class="font-cinematic text-sm sm:text-base font-bold text-white hover:text-[#E50914] transition-colors line-clamp-1 cursor-pointer media-card-clickable"
+            data-media-id="${media.id}"
+          >
+            ${media.title}
+          </h3>
+        </div>
+
+        <!-- MW-08 & Rating Controls -->
+        <div class="space-y-2 mb-3">
+          <!-- Status Toggle Button -->
+          <button 
+            data-action="toggle-status" 
+            data-id="${media.id}" 
+            data-status="${isWatched ? 'to-watch' : 'watched'}"
+            class="w-full py-2 px-3 rounded-xl text-xs font-bold transition-all text-center ${
+              isWatched 
+                ? 'bg-[#20222D] hover:bg-[#2c2f3e] text-[#B8BBC6] border border-[#2B2D3C]' 
+                : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+            }"
+          >
+            ${isWatched ? 'Mark as To-Watch' : 'Mark as Watched'}
+          </button>
+
+          <!-- Rate Button (ONLY visible when watched) -->
+          ${isWatched ? `
+            <button 
+              data-action="open-rating" 
+              data-id="${media.id}" 
+              class="w-full py-2 px-3 rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 ${
+                userRating 
+                  ? 'bg-amber-950/60 hover:bg-amber-900/60 border border-amber-500/50 text-amber-300' 
+                  : 'bg-[#1C1D26] hover:bg-amber-950/50 border border-amber-500/30 text-amber-300'
+              }"
+            >
+              <span>★</span>
+              <span>${userRating ? `Rated ${userRating.rating}/5` : 'Rate Movie'}</span>
+            </button>
+          ` : ''}
+        </div>
+
+        <!-- MW-09: Personal Note Section -->
+        <div class="pt-2.5 border-t border-[#21232E] mt-auto">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#8E92A0]">Personal Note</span>
+            <button 
+              data-action="toggle-note-edit" 
+              data-id="${media.id}" 
+              class="text-[10px] font-semibold text-[#E50914] hover:underline"
+            >
+              ${media.note ? 'Edit Note' : '+ Add Note'}
+            </button>
+          </div>
+
+          <!-- Note Display -->
+          <div id="note-display-${media.id}" class="${media.note ? '' : 'hidden'} bg-[#0F1015] border border-[#232530] rounded-xl p-2.5 text-xs text-[#D1D5DB] leading-relaxed line-clamp-3">
+            ${media.note || ''}
+          </div>
+
+          <!-- Note Edit Box -->
+          <div id="note-form-${media.id}" class="hidden space-y-1.5 mt-1.5">
+            <textarea 
+              id="note-input-${media.id}" 
+              class="w-full bg-[#0B0B0E] border border-[#2B2D3C] focus:border-[#E50914] rounded-lg p-2 text-xs text-white placeholder-[#717684] outline-none resize-none" 
+              rows="2" 
+              placeholder="Add your private note..."
+            >${media.note || ''}</textarea>
+            <div class="flex items-center gap-1.5 justify-end">
+              <button 
+                data-action="cancel-note" 
+                data-id="${media.id}" 
+                class="px-2.5 py-1 rounded text-[11px] text-[#8E92A0] hover:text-white"
+              >
+                Cancel
+              </button>
+              <button 
+                data-action="save-note" 
+                data-id="${media.id}" 
+                class="px-3 py-1 rounded bg-[#E50914] hover:bg-[#B80710] text-white text-[11px] font-bold transition-colors"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   attachEvents() {
     MediaCard.bindEvents(this.container);
+
+    // Click on watchlist card / title -> open details modal
+    this.container.querySelectorAll('.media-card-clickable').forEach((card) => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('[data-action]')) return;
+        const mediaId = card.dataset.mediaId;
+        if (mediaId) store.openMediaDetail(mediaId);
+      });
+    });
+
+    // MW-08: Toggle Watch Status
+    this.container.querySelectorAll('[data-action="toggle-status"]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const status = btn.dataset.status;
+        if (id && status) {
+          btn.disabled = true;
+          try {
+            await store.updateWatchlistStatus(id, status);
+          } finally {
+            btn.disabled = false;
+          }
+        }
+      });
+    });
+
+    // Rating: Open Rating Modal
+    this.container.querySelectorAll('[data-action="open-rating"]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        if (id) store.openRatingModal(id);
+      });
+    });
+
+    // MW-09: Toggle Note Form
+    this.container.querySelectorAll('[data-action="toggle-note-edit"]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const form = this.container.querySelector(`#note-form-${id}`);
+        const display = this.container.querySelector(`#note-display-${id}`);
+        if (form) {
+          form.classList.toggle('hidden');
+          if (display) display.classList.toggle('hidden');
+        }
+      });
+    });
+
+    // MW-09: Cancel Note Edit
+    this.container.querySelectorAll('[data-action="cancel-note"]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const form = this.container.querySelector(`#note-form-${id}`);
+        const display = this.container.querySelector(`#note-display-${id}`);
+        if (form) form.classList.add('hidden');
+        if (display) {
+          const media = (store.getState().watchlist || []).find((m) => m.id === id);
+          if (media && media.note) display.classList.remove('hidden');
+        }
+      });
+    });
+
+    // MW-09: Save Note
+    this.container.querySelectorAll('[data-action="save-note"]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const input = this.container.querySelector(`#note-input-${id}`);
+        if (id && input) {
+          btn.disabled = true;
+          try {
+            await store.updateWatchlistNote(id, input.value.trim());
+          } finally {
+            btn.disabled = false;
+          }
+        }
+      });
+    });
+
+    // Remove from Watchlist
+    this.container.querySelectorAll('[data-action="remove-watchlist"]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        if (id) {
+          btn.disabled = true;
+          try {
+            await store.removeFromWatchlist(id);
+          } finally {
+            btn.disabled = false;
+          }
+        }
+      });
+    });
 
     const goDiscoverBtn = this.container.querySelector('#watchlist-go-discover');
     if (goDiscoverBtn) {

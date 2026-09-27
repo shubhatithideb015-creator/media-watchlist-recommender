@@ -10,6 +10,7 @@ import { MobileHeader } from './components/MobileHeader.js';
 import { BottomNav } from './components/BottomNav.js';
 import { MediaModal } from './components/MediaModal.js';
 import { Toast } from './components/Toast.js';
+import { RatingModal } from './components/RatingModal.js';
 
 import { HomeView } from './components/views/HomeView.js';
 import { DiscoverView } from './components/views/DiscoverView.js';
@@ -23,6 +24,7 @@ class CinemaMatchApp {
     this.bottomNavContainer = document.getElementById('bottom-nav-container');
     this.mainViewContainer = document.getElementById('main-view-container');
     this.modalContainer = document.getElementById('modal-container');
+    this.ratingModalContainer = document.getElementById('rating-modal-container');
     this.toastContainer = document.getElementById('toast-container');
 
     // Navigation & Persistent Components
@@ -31,6 +33,7 @@ class CinemaMatchApp {
     this.mobileHeader = new MobileHeader(this.mobileHeaderContainer);
     this.bottomNav = new BottomNav(this.bottomNavContainer);
     this.mediaModal = new MediaModal(this.modalContainer);
+    this.ratingModal = new RatingModal(this.ratingModalContainer);
     this.toast = new Toast(this.toastContainer);
 
     // Views
@@ -73,12 +76,17 @@ class CinemaMatchApp {
       }
     });
 
-    // Concurrently fetch curated media (GET /api/media) and saved watchlist (GET /api/watchlist)
+    // Concurrently fetch curated media, watchlist, taste DNA and recommendations
     try {
-      await Promise.allSettled([
-        store.loadCuratedMedia(),
-        store.loadWatchlist(),
-      ]);
+      const promises = [store.loadCuratedMedia()];
+      if (store.getState().isLoggedIn) {
+        promises.push(
+          store.loadWatchlist(),
+          store.loadTasteDna(),
+          store.loadRecommendations()
+        );
+      }
+      await Promise.allSettled(promises);
     } catch (err) {
       console.warn('Backend initialization warning:', err);
     }
@@ -88,10 +96,19 @@ class CinemaMatchApp {
 
   render(isInitial = false) {
     const state = store.getState();
-     if (state.currentView === 'login') {
+    if (state.currentView === 'login') {
+      if (this.activeViewName !== 'login' || isInitial) {
+        this.activeViewName = 'login';
+        this.sidebarContainer.innerHTML = '';
+        this.topbarContainer.innerHTML = '';
+        this.mobileHeaderContainer.innerHTML = '';
+        this.bottomNavContainer.innerHTML = '';
         this.mainViewContainer.innerHTML = '';
+        if (this.modalContainer) this.modalContainer.innerHTML = '';
+        if (this.ratingModalContainer) this.ratingModalContainer.innerHTML = '';
         this.views.login.render();
-        return;
+      }
+      return;
     }
     // Render persistent headers & navigation
     this.sidebar.render();
@@ -101,6 +118,7 @@ class CinemaMatchApp {
 
     // Render Modal & Toast
     this.mediaModal.render();
+    this.ratingModal.render();
     this.toast.render();
 
     // If active view changed or is initial, mount target view

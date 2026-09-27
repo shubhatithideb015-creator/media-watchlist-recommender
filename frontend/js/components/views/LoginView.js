@@ -2,13 +2,21 @@
 // Login View for CinemaMatch
 
 import { store } from '../../state/store.js';
+import { getApiBaseUrl } from '../../services/api.js';
+
+function getAuthApiBaseUrl() {
+  return getApiBaseUrl() || 'http://localhost:5000';
+}
 
 export class LoginView {
   constructor(container) {
     this.container = container;
+    this.isSignup = false;
   }
 
   render() {
+    const isSignup = this.isSignup;
+
     this.container.innerHTML = `
       <div class="min-h-[80vh] flex items-center justify-center px-4">
         <div class="w-full max-w-md">
@@ -19,15 +27,17 @@ export class LoginView {
             </h1>
 
             <p class="text-sm text-[#8E92A0] mt-2">
-              Sign in to continue
+              ${isSignup ? 'Create an account to continue' : 'Sign in to continue'}
             </p>
           </div>
 
           <div class="bg-[#121319] border border-[#232530] rounded-2xl p-6 sm:p-8">
 
             <h2 class="text-xl font-bold text-white mb-6">
-              Welcome back
+              ${isSignup ? 'Create account' : 'Welcome back'}
             </h2>
+
+            <p id="auth-feedback" class="hidden text-xs mb-4"></p>
 
             <form id="login-form" class="space-y-4">
 
@@ -64,18 +74,19 @@ export class LoginView {
                 type="submit"
                 class="w-full bg-[#E50914] hover:bg-[#B80710] text-white font-bold py-3 rounded-xl transition"
               >
-                Login
+                ${isSignup ? 'Sign up' : 'Login'}
               </button>
 
             </form>
 
             <p class="text-center text-xs text-[#8E92A0] mt-6">
-              Don't have an account?
+              ${isSignup ? 'Already have an account?' : "Don't have an account?"}
               <button
                 id="show-signup-btn"
+                type="button"
                 class="text-[#E50914] font-semibold hover:underline"
               >
-                Sign up
+                ${isSignup ? 'Login' : 'Sign up'}
               </button>
             </p>
 
@@ -84,59 +95,85 @@ export class LoginView {
       </div>
     `;
 
-    this.handleLogin();
+    this.bindAuthEvents();
   }
 
-  handleLogin() {
+  showAuthFeedback(message, isError) {
+    const el = this.container.querySelector('#auth-feedback');
+    if (!el) return;
+    el.textContent = message;
+    el.className = isError
+      ? 'text-xs mb-4 text-red-400'
+      : 'text-xs mb-4 text-emerald-400';
+  }
+
+  bindAuthEvents() {
     const form = this.container.querySelector('#login-form');
     const submitBtn = this.container.querySelector('#login-submit-btn');
+    const toggleBtn = this.container.querySelector('#show-signup-btn');
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.isSignup = !this.isSignup;
+        this.render();
+      });
+    }
+
+    if (!form) return;
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const username = this.container.querySelector('#login-username').value;
+      const username = this.container.querySelector('#login-username').value.trim();
       const password = this.container.querySelector('#login-password').value;
+      const base = getAuthApiBaseUrl();
+      const endpoint = this.isSignup ? '/api/auth/signup' : '/api/auth/login';
+      const url = `${base}${endpoint}`;
 
-      // Disable button during request
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Signing in...';
+        submitBtn.textContent = this.isSignup ? 'Creating account...' : 'Signing in...';
       }
 
       try {
-        const response = await fetch(
-          `${window.__API_BASE_URL__}/api/auth/login`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              username,
-              password
-            })
-          }
-        );
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username,
+            password
+          })
+        });
 
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
+
+        if (this.isSignup) {
+          if (response.status === 201) {
+            this.isSignup = false;
+            this.render();
+            this.showAuthFeedback(data.message || 'Account created. Please log in.', false);
+          } else {
+            this.showAuthFeedback(data.error || 'Signup failed', true);
+          }
+          return;
+        }
 
         if (response.status === 200) {
-          // Successful login
           store.login(data.user_id, data.username);
         } else {
-          // Failed login - show error from backend
-          store.showToast(data.error || 'Login failed', 'error');
+          this.showAuthFeedback(data.error || 'Login failed', true);
         }
 
       } catch (error) {
-        // Network/fetch error
-        console.error('Login error:', error);
-        store.showToast('Network error. Please check your connection.', 'error');
+        console.error(this.isSignup ? 'Signup error:' : 'Login error:', error);
+        this.showAuthFeedback('Network error. Please check your connection.', true);
       } finally {
-        // Re-enable button
-        if (submitBtn) {
+        if (submitBtn && this.container.contains(submitBtn)) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Login';
+          submitBtn.textContent = this.isSignup ? 'Sign up' : 'Login';
         }
       }
     });

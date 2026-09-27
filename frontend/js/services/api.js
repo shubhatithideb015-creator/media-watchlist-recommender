@@ -75,6 +75,8 @@ export function normalizeMedia(item) {
     year: year,
     media_type: item.media_type || (item.Type === 'series' ? 'series' : 'movie'),
     type: item.media_type === 'series' || item.type === 'tv' ? 'tv' : 'movie',
+    watch_status: item.watch_status || 'to-watch',
+    note: item.note !== undefined ? item.note : null,
   };
 }
 
@@ -201,8 +203,9 @@ class MediaApiService {
       throw new Error('userId is required');
     }
 
+    const baseUrl = getApiBaseUrl();
     const response = await fetch(
-      `${window.__API_BASE_URL__}/api/taste-dna?user_id=${userId}`
+      `${baseUrl}/api/taste-dna?user_id=${encodeURIComponent(userId)}`
     );
 
     const data = await response.json();
@@ -321,6 +324,66 @@ class MediaApiService {
     }
 
     throw new Error(data.error || `Failed to remove from watchlist (Status: ${response.status})`);
+  }
+
+  /**
+   * Update watch status via backend PATCH /api/watchlist/<media_id>?user_id=<user_id>
+   */
+  async updateWatchlistStatus(mediaId, userId, status) {
+    if (!mediaId || !String(mediaId).trim()) {
+      throw new Error('media_id is required');
+    }
+    const cleanId = String(mediaId).trim();
+    if (!userId) {
+      throw new Error('user_id is required');
+    }
+    const baseUrl = getApiBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/api/watchlist/${encodeURIComponent(cleanId)}?user_id=${encodeURIComponent(userId)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      }
+    );
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.error || `Failed to update status (Status: ${response.status})`);
+    }
+    return data;
+  }
+
+  /**
+   * Update watchlist note via backend PATCH /api/watchlist/<media_id>?user_id=<user_id>
+   */
+  async updateWatchlistNote(mediaId, userId, note) {
+    if (!mediaId || !String(mediaId).trim()) {
+      throw new Error('media_id is required');
+    }
+    const cleanId = String(mediaId).trim();
+    if (!userId) {
+      throw new Error('user_id is required');
+    }
+    const baseUrl = getApiBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/api/watchlist/${encodeURIComponent(cleanId)}?user_id=${encodeURIComponent(userId)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ note }),
+      }
+    );
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.error || `Failed to update note (Status: ${response.status})`);
+    }
+    return data;
   }
 }
 

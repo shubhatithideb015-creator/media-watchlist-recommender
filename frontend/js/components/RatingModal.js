@@ -70,9 +70,10 @@ export class RatingModal {
           <!-- Header -->
           <div class="flex items-center gap-4 mb-6">
             <img 
-              src="${media.poster}" 
+              src="${media.poster_url || media.poster || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80'}" 
               alt="${media.title}" 
               class="w-16 h-20 rounded-xl object-cover border border-[#2B2D3C]"
+              onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80'"
             />
             <div>
               <span class="text-xs font-bold text-[#E50914] uppercase tracking-wider">Rate & Calibrate</span>

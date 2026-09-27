@@ -403,7 +403,12 @@ def _assign_sections(ranked, profile, per_section=5):
             break
         rec_copy = dict(rec)
         rec_copy["section"] = "top_picks"
-        rec_copy["reason"] = "Top pick for you"
+        if rec.get("anchor_title"):
+            rec_copy["reason"] = f"Because you rated {rec.get('anchor_title')} highly"
+        elif top_genre:
+            rec_copy["reason"] = f"Because you liked {top_genre}"
+        else:
+            rec_copy["reason"] = "Top pick for you"
         sections["top_picks"].append(rec_copy)
         used_ids.add(rec["media"].get("id"))
 
@@ -429,10 +434,7 @@ def _assign_sections(ranked, profile, per_section=5):
             rec_copy = dict(rec)
             rec_copy["section"] = "because_you_watched"
             rec_copy["anchor_title"] = anchor_title
-            rec_copy["reason"] = (
-                "Because you watched "
-                + rec_copy["anchor_title"]
-            )
+            rec_copy["reason"] = f"Because you rated {anchor_title} highly"
             sections["because_you_watched"].append(rec_copy)
             used_ids.add(rec["media"].get("id"))
 
@@ -451,7 +453,7 @@ def _assign_sections(ranked, profile, per_section=5):
             rec_copy["section"] = "because_you_like"
             rec_copy["anchor_title"] = rec.get("anchor_title") 
             rec_copy["matched_genre"] = top_genre
-            rec_copy["reason"] = "Because you like " + top_genre
+            rec_copy["reason"] = f"Because you liked {top_genre}"
             sections["because_you_like"].append(rec_copy)
             used_ids.add(rec["media"].get("id"))
 

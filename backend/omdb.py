@@ -3,7 +3,8 @@ import re
 import requests
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BACKEND_DIR, ".env"))
 load_dotenv()
 
 OMDB_BASE_URL = "https://www.omdbapi.com/"

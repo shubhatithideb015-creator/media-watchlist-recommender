@@ -45,7 +45,27 @@ class Store {
 
       // Feedback toast
       toast: null,
+
+      // User Ratings: { [mediaId]: { rating, reviewTag, ratedAt } }
+      ratings: {},
+      ratingModalMediaId: null,
     };
+
+    // Restore persistent session if present
+    try {
+      const savedUserStr = localStorage.getItem('cinematch_user');
+      if (savedUserStr) {
+        const savedUser = JSON.parse(savedUserStr);
+        if (savedUser && savedUser.id) {
+          this.state.isLoggedIn = true;
+          this.state.currentUser = savedUser;
+          this.state.currentView = 'home';
+          this.loadUserRatings(savedUser.id);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to restore user session:', e);
+    }
   }
 
   getState() {
@@ -99,17 +119,23 @@ class Store {
    */
   login(userId, username) {
     this.state.isLoggedIn = true;
-
     this.state.currentUser = { id: userId, username };
-
     this.state.currentView = 'home';
 
+    try {
+      localStorage.setItem('cinematch_user', JSON.stringify({ id: userId, username }));
+    } catch (e) {
+      console.warn('Failed to save user session:', e);
+    }
+
+    this.loadUserRatings(userId);
     this.notify();
 
     this.loadWatchlist();
     this.loadTasteDna();
     this.loadRecommendations();
   }
+
   /**
    * Logout user and clear authentication state
    */
@@ -118,8 +144,41 @@ class Store {
     this.state.currentUser = null;
     this.state.watchlist = [];
     this.state.watchlistError = null;
+    this.state.ratings = {};
     this.state.currentView = 'login';
+
+    try {
+      localStorage.removeItem('cinematch_user');
+    } catch (e) {
+      console.warn('Failed to clear user session:', e);
+    }
+
     this.notify();
+  }
+
+  loadUserRatings(userId) {
+    if (!userId) {
+      this.state.ratings = {};
+      return;
+    }
+    try {
+      const raw = localStorage.getItem(`cinematch_ratings_${userId}`);
+      this.state.ratings = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      this.state.ratings = {};
+    }
+  }
+
+  saveUserRatings(userId) {
+    if (!userId) return;
+    try {
+      localStorage.setItem(
+        `cinematch_ratings_${userId}`,
+        JSON.stringify(this.state.ratings || {})
+      );
+    } catch (e) {
+      console.warn('Failed to save user ratings:', e);
+    }
   }
 
   /**
@@ -420,6 +479,130 @@ class Store {
     } else {
       this.state.mediaList[idx] = { ...this.state.mediaList[idx], ...normalized };
     }
+  }
+
+  /**
+   * MW-08: Update watch status ("watched" / "to-watch")
+   */
+  async updateWatchlistStatus(mediaId, status) {
+    const userId = this.state.currentUser?.id;
+    if (!userId) {
+      this.showToast('Please log in first', 'error');
+      return;
+    }
+
+    try {
+      await apiService.updateWatchlistStatus(mediaId, userId, status);
+
+      // Update in state.watchlist
+      this.state.watchlist = this.state.watchlist.map((item) => {
+        if (item.id === mediaId) {
+          return { ...item, watch_status: status };
+        }
+        return item;
+      });
+
+      // Also update in mediaList
+      this.state.mediaList = this.state.mediaList.map((item) => {
+        if (item.id === mediaId) {
+          return { ...item, watch_status: status };
+        }
+        return item;
+      });
+
+      this.showToast(
+        status === 'watched' ? 'Marked as Watched' : 'Marked as To-Watch',
+        'success'
+      );
+      this.notify();
+    } catch (err) {
+      console.error('Update watchlist status error:', err);
+      this.showToast(err.message || 'Failed to update status', 'error');
+    }
+  }
+
+  /**
+   * MW-09: Update personal note for watchlist item
+   */
+  async updateWatchlistNote(mediaId, note) {
+    const userId = this.state.currentUser?.id;
+    if (!userId) {
+      this.showToast('Please log in first', 'error');
+      return;
+    }
+
+    try {
+      await apiService.updateWatchlistNote(mediaId, userId, note);
+
+      // Update in state.watchlist
+      this.state.watchlist = this.state.watchlist.map((item) => {
+        if (item.id === mediaId) {
+          return { ...item, note };
+        }
+        return item;
+      });
+
+      // Also update in mediaList
+      this.state.mediaList = this.state.mediaList.map((item) => {
+        if (item.id === mediaId) {
+          return { ...item, note };
+        }
+        return item;
+      });
+
+      this.showToast('Personal note saved', 'success');
+      this.notify();
+    } catch (err) {
+      console.error('Update watchlist note error:', err);
+      this.showToast(err.message || 'Failed to save note', 'error');
+    }
+  }
+
+  // --- RATINGS ACTIONS ---
+
+  getUserRating(mediaId) {
+    if (!mediaId) return null;
+    return this.state.ratings[mediaId] || null;
+  }
+
+  setRating(mediaId, rating, reviewTag = '') {
+    const userId = this.state.currentUser?.id;
+    if (!userId) {
+      this.showToast('Please log in first', 'error');
+      return;
+    }
+
+    this.state.ratings[mediaId] = {
+      rating: Number(rating),
+      reviewTag: reviewTag || '',
+      ratedAt: new Date().toISOString(),
+    };
+    this.saveUserRatings(userId);
+    this.state.ratingModalMediaId = null;
+    this.showToast('Rating saved successfully!', 'success');
+    this.notify();
+    this.loadRecommendations();
+  }
+
+  removeRating(mediaId) {
+    const userId = this.state.currentUser?.id;
+    if (!userId) return;
+
+    delete this.state.ratings[mediaId];
+    this.saveUserRatings(userId);
+    this.showToast('Rating removed', 'info');
+    this.notify();
+    this.loadRecommendations();
+  }
+
+  openRatingModal(mediaId) {
+    this.state.ratingModalMediaId = mediaId;
+    this.notify();
+  }
+
+  closeRatingModal() {
+    this.state.ratingModalMediaId = null;
+    this.notify();
   }
 }
 

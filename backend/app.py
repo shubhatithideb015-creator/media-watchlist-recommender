@@ -1,4 +1,10 @@
 import os
+from dotenv import load_dotenv
+
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BACKEND_DIR, ".env"))
+load_dotenv()
+
 from flask import Flask, request
 from flask_cors import CORS
 from database import get_db_connection, init_db
@@ -405,6 +411,62 @@ def get_watchlist():
         if connection:
             connection.close()
         app.logger.error(f"Error in get_watchlist: {e}", exc_info=True)
+        return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
+
+
+@app.route('/api/watchlist', methods=['POST'])
+def add_to_watchlist():
+    data = request.get_json(silent=True)
+    if not data:
+        return {"error": "Request body is required"}, 400
+
+    user_id = data.get("user_id")
+    media_id = data.get("media_id")
+
+    if user_id is None or user_id == "":
+        return {"error": "user_id is required"}, 400
+
+    try:
+        user_id = int(user_id)
+    except (ValueError, TypeError):
+        return {"error": "user_id must be an integer"}, 400
+
+    if not media_id or not str(media_id).strip():
+        return {"error": "media_id is required"}, 400
+
+    target_id = str(media_id).strip()
+
+    connection = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Check if the movie is already in that user's watchlist; return HTTP 409 if it is
+        cursor.execute(
+            'SELECT id FROM watchlist WHERE user_id = ? AND media_id = ?',
+            (user_id, target_id)
+        )
+        existing = cursor.fetchone()
+        if existing is not None:
+            connection.close()
+            connection = None
+            return {"error": "Media already in watchlist"}, 409
+
+        # Insert the movie with status='to-watch' and note=NULL
+        cursor.execute(
+            'INSERT INTO watchlist (user_id, media_id, status, note) VALUES (?, ?, ?, ?)',
+            (user_id, target_id, 'to-watch', None)
+        )
+        connection.commit()
+        connection.close()
+        connection = None
+
+        return {"message": "Media added to watchlist"}, 201
+
+    except Exception as e:
+        if connection:
+            connection.close()
+        app.logger.error(f"Error in add_to_watchlist: {e}", exc_info=True)
         return {"error": f"Internal server error: {type(e).__name__}: {str(e)}"}, 500
 
 
