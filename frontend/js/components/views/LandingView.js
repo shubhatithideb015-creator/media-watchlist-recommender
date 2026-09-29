@@ -226,3 +226,5 @@ export class LandingView {
     }
   }
 }
+// js/components/views/LandingView.js
+// Landing / Welcome Tour View matching Screenshot 4     
