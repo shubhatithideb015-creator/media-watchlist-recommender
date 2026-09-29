@@ -1,5 +1,4 @@
-// js/components/MobileHeader.js
-// Mobile Top Header (Search removed from header)
+
 
 import { store } from '../state/store.js';
 
@@ -59,3 +58,5 @@ export class MobileHeader {
   }
 }
 
+// js/components/MobileHeader.js
+// Mobile Top Header (Search removed from header) 
