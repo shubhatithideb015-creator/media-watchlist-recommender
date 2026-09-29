@@ -1,6 +1,4 @@
-// js/components/views/HomeView.js
-// Home View for CinemaMatch
-// Displays Hero Banner and 5 Curated Titles from backend GET /api/media
+
 
 import { store } from '../../state/store.js';
 import { MediaCard } from '../MediaCard.js';
@@ -368,3 +366,6 @@ export class HomeView {
     }
   }
 }
+// js/components/views/HomeView.js
+// Home View for CinemaMatch
+// Displays Hero Banner and 5 Curated Titles from backend GET /api/media
