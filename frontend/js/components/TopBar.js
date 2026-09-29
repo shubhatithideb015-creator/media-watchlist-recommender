@@ -1,5 +1,4 @@
-// js/components/TopBar.js
-// Desktop Top Header Bar (Search removed from navbar)
+
 
 import { store } from '../state/store.js';
 
@@ -65,4 +64,5 @@ export class TopBar {
     }
   }
 }
-
+// js/components/TopBar.js
+// Desktop Top Header Bar (Search removed from navbar)
