@@ -1,6 +1,3 @@
-// js/components/MediaCard.js
-// Media Card Component for CinemaMatch
-// Displays movie/show card with poster_url, rating, genre, release_year, and watchlist controls
 
 import { store } from '../state/store.js';
 
@@ -191,3 +188,6 @@ export class MediaCard {
     });
   }
 }
+// js/components/MediaCard.js
+// Media Card Component for CinemaMatch
+// Displays movie/show card with poster_url, rating, genre, release_year, and watchlist controls
