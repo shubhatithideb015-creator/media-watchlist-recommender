@@ -1,5 +1,3 @@
-// js/components/views/LoginView.js
-// Login View for CinemaMatch
 
 import { store } from '../../state/store.js';
 import { getApiBaseUrl } from '../../services/api.js';
@@ -179,3 +177,5 @@ export class LoginView {
     });
   }
 }
+// js/components/views/LoginView.js
+// Login View for CinemaMatch
