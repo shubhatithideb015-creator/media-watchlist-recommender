@@ -1,27 +1,3 @@
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-// js/components/BottomNav.js
-// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
-
-
 
 import { store } from '../state/store.js';
 
@@ -94,3 +70,642 @@ export class BottomNav {
     });
   }
 }
+//
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
+// js/components/BottomNav.js
+// Mobile Bottom Navigation Bar (Iteration 1: Home, Discover, Watchlist)
