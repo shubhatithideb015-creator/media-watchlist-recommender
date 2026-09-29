@@ -182,11 +182,4 @@ h1, h2, h3, h4, h5, h6, .font-cinematic {
   animation: modal-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Hide scrollbar for clean carousels */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+
